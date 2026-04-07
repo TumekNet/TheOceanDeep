@@ -820,7 +820,7 @@ html, body {
     <div class="hud-lives" id="livesDisplay"></div>
     <div class="hud-score" style="text-align:right">
       <span class="hud-label" id="hudRightLabel">Best</span>
-      <span class="hud-val" id="hudRightVal">0</span>
+      <span class="hud-val" id="hudRightVal" style="font-size:1rem;line-height:1.2">0</span>
     </div>
   </div>
   <div class="question-display">
@@ -832,6 +832,7 @@ html, body {
     <div class="combo-label">combo!</div>
   </div>
   <button class="pause-btn" id="pauseBtn">⏸</button>
+  <button class="pause-btn" id="muteBtn" style="right:74px" onclick="toggleMute()">🔊</button>
 </div>
 
 <!-- ══════════ PAUSE ══════════ -->
@@ -862,6 +863,7 @@ html, body {
     <div class="scorecard-list" id="scorecardList"></div>
     <button class="btn-download" id="downloadBtn">⬇ Download Session JSON</button>
     <div class="end-btns">
+      <button class="btn-primary" id="nextLevelBtn" style="font-size:1.1rem;padding:13px;display:none">Next Level ›</button>
       <button class="btn-primary" id="playAgainBtn" style="font-size:1.1rem;padding:13px">Play Again!</button>
       <button class="btn-secondary" id="endMenuBtn">Menu</button>
     </div>
@@ -1335,6 +1337,7 @@ function wireButtons() {
   document.getElementById('quitBtn').addEventListener('click', quitToMenu);
 
   // End screen
+  document.getElementById('nextLevelBtn').addEventListener('click', startNextLevel);
   document.getElementById('playAgainBtn').addEventListener('click', playAgain);
   document.getElementById('endMenuBtn').addEventListener('click', () => { showScreen('menuScreen'); refreshMenu(); });
   document.getElementById('downloadBtn').addEventListener('click', downloadJSON);
@@ -1530,8 +1533,8 @@ function startGame() {
   // HUD right label
   if (gameState.mode === 'campaign') {
     const lvl = LEVELS[gameState.levelId - 1];
-    document.getElementById('hudRightLabel').textContent = `Lv ${gameState.levelId}`;
-    document.getElementById('hudRightVal').textContent = lvl.name.split(' ')[0];
+    document.getElementById('hudRightLabel').textContent = `Level ${gameState.levelId}`;
+    document.getElementById('hudRightVal').textContent = lvl.name;
   } else {
     document.getElementById('hudRightLabel').textContent = 'Best';
     const best = Math.max(0, ...player.highScores.filter(s=>s.mode==='free').map(s=>s.score));
@@ -1674,8 +1677,15 @@ function onBubbleClick(bub, value, color) {
 }
 
 function correctAnswer(bub, cx, cy, color) {
+  // Lock all bubbles immediately so no accidental follow-up taps
+  document.querySelectorAll('.game-bubble').forEach(b => {
+    b.dataset.popped = 'true';
+    b.style.pointerEvents = 'none';
+  });
+
   popBubble(bub, cx, cy, color.glow);
   flashScreen('rgba(0,255,150,.14)');
+  sfxCorrect();
 
   gameState.streak++;
   gameState.combo = gameState.streak >= 5 ? 3 : gameState.streak >= 3 ? 2 : 1;
@@ -1691,9 +1701,9 @@ function correctAnswer(bub, cx, cy, color) {
   showFloatText(`+${points}`, cx, cy, '#00ffaa');
 
   if (gameState.streak===7) checkAchievement('on_fire');
-  if (gameState.streak===3) showStreakBadge('🔥 3 in a row!');
-  else if (gameState.streak===5) showStreakBadge('⚡ 5 streak! ×3!');
-  else if (gameState.streak>5 && gameState.streak%5===0) showStreakBadge(`🌟 ${gameState.streak} streak!`);
+  if (gameState.streak===3) { sfxStreak(); showStreakBadge('🔥 3 in a row!'); }
+  else if (gameState.streak===5) { sfxStreak(); showStreakBadge('⚡ 5 streak! ×3!'); }
+  else if (gameState.streak>5 && gameState.streak%5===0) { sfxStreak(); showStreakBadge(`🌟 ${gameState.streak} streak!`); }
 
   if (gameState.combo > 1) {
     document.getElementById('comboNum').textContent = `×${gameState.combo}`;
@@ -1713,6 +1723,7 @@ function correctAnswer(bub, cx, cy, color) {
 function wrongAnswer(bub, cx, cy, tapped) {
   popBubble(bub, cx, cy, '#ff4466');
   flashScreen('rgba(255,50,80,.13)');
+  sfxWrong();
   gameState.streak = 0; gameState.combo = 1; gameState.wrongTaps++;
   document.getElementById('comboDisplay').classList.remove('visible');
   showFloatText('✕', cx, cy, '#ff4466');
@@ -1729,6 +1740,7 @@ function bubbleEscaped() {
   renderLives();
   gameState.questionLog.push({ question:gameState.currentQuestion, correctAnswer:gameState.currentAnswer, tapped:null, result:'escaped', points:0 });
   flashScreen('rgba(255,50,80,.1)');
+  sfxEscaped();
   showFloatText('💨', window.innerWidth/2, window.innerHeight/2, '#aaa');
   if (gameState.lives <= 0) { setTimeout(() => endGame(false), 500); return; }
   setTimeout(() => { if (gameState.running) nextQuestion(); }, 420);
@@ -1813,6 +1825,13 @@ function quitToMenu() {
   document.getElementById('pauseBtn').textContent = '⏸';
   showScreen('menuScreen');
   refreshMenu();
+}
+
+function startNextLevel() {
+  const nextIdx = gameState.levelId; // levelId is 1-based, so this is already the next index
+  if (nextIdx >= LEVELS.length) { showScreen('menuScreen'); refreshMenu(); return; }
+  pendingLevelIdx = nextIdx;
+  startCampaignLevel();
 }
 
 function playAgain() {
@@ -1912,6 +1931,7 @@ async function endGame(completed) {
   // Theme unlock banner
   const banner = document.getElementById('themeUnlockBanner');
   if (newThemesUnlocked.length > 0) {
+    sfxThemeUnlock();
     banner.style.display = 'block';
     banner.innerHTML = newThemesUnlocked.map(tid => `
       <div class="theme-unlock">
@@ -1920,6 +1940,12 @@ async function endGame(completed) {
       </div>
     `).join('');
   } else { banner.style.display = 'none'; }
+
+  // Stars sound + level complete fanfare
+  if (gameState.mode === 'campaign' && starsEarned > 0) {
+    sfxLevelComplete();
+    setTimeout(() => sfxStars(starsEarned), 600);
+  }
 
   // Summary
   document.getElementById('scorecardSummary').innerHTML = `
@@ -1942,6 +1968,16 @@ async function endGame(completed) {
   });
 
   showScreen('endScreen');
+
+  // Show Next Level button only if campaign, passed, and not the last level
+  const nextBtn = document.getElementById('nextLevelBtn');
+  const isLastLevel = gameState.levelId === LEVELS.length;
+  if (gameState.mode === 'campaign' && starsEarned >= 1 && !isLastLevel) {
+    nextBtn.style.display = 'block';
+    nextBtn.textContent = `Next Level ›`;
+  } else {
+    nextBtn.style.display = 'none';
+  }
 }
 
 // ═══════════════════════════════════════════════════════
@@ -1984,6 +2020,7 @@ function checkWeekendAchievement() {
 function showAchievementToast(id) {
   const ach = ACHIEVEMENTS.find(a => a.id === id);
   if (!ach) return;
+  sfxAchievement();
   const toast = document.createElement('div');
   toast.className = 'achievement-toast';
   toast.innerHTML = `<div class="toast-icon">${ach.icon}</div><div class="toast-text"><div class="toast-name">Achievement: ${ach.name}</div><div class="toast-desc">${ach.desc}</div></div>`;
@@ -2101,8 +2138,163 @@ function downloadJSON() {
 }
 
 // ═══════════════════════════════════════════════════════
-// START
+// AUDIO ENGINE
 // ═══════════════════════════════════════════════════════
+let audioCtx = null;
+let audioMuted = false;
+
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
+}
+
+function playSound(fn) {
+  if (audioMuted) return;
+  try { fn(getAudioCtx()); } catch(e) {}
+}
+
+// 💧 Correct Pop — Bloop A
+function sfxCorrect() {
+  playSound(c => {
+    const osc = c.createOscillator();
+    const gain = c.createGain();
+    osc.connect(gain); gain.connect(c.destination);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(400, c.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(900, c.currentTime + 0.12);
+    gain.gain.setValueAtTime(0.5, c.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.22);
+    osc.start(c.currentTime); osc.stop(c.currentTime + 0.22);
+  });
+}
+
+// ❌ Wrong Pop — Thud A
+function sfxWrong() {
+  playSound(c => {
+    const osc = c.createOscillator();
+    const gain = c.createGain();
+    osc.connect(gain); gain.connect(c.destination);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(200, c.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(60, c.currentTime + 0.18);
+    gain.gain.setValueAtTime(0.55, c.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.22);
+    osc.start(c.currentTime); osc.stop(c.currentTime + 0.22);
+  });
+}
+
+// 💨 Escaped — Drop C
+function sfxEscaped() {
+  playSound(c => {
+    const osc = c.createOscillator();
+    const gain = c.createGain();
+    osc.connect(gain); gain.connect(c.destination);
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(550, c.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(150, c.currentTime + 0.3);
+    gain.gain.setValueAtTime(0.35, c.currentTime);
+    gain.gain.setValueAtTime(0.35, c.currentTime + 0.1);
+    gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.35);
+    osc.start(c.currentTime); osc.stop(c.currentTime + 0.35);
+  });
+}
+
+// 🔥 Streak — Chime A (3 ascending notes)
+function sfxStreak() {
+  playSound(c => {
+    [523, 659, 784].forEach((freq, i) => {
+      const osc = c.createOscillator();
+      const gain = c.createGain();
+      osc.connect(gain); gain.connect(c.destination);
+      osc.type = 'sine'; osc.frequency.value = freq;
+      const t = c.currentTime + i * 0.1;
+      gain.gain.setValueAtTime(0.35, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+      osc.start(t); osc.stop(t + 0.25);
+    });
+  });
+}
+
+// ✅ Level Complete — Jingle C
+function sfxLevelComplete() {
+  playSound(c => {
+    const arp = [523, 659, 784, 1047, 784, 1047, 1319];
+    arp.forEach((freq, i) => {
+      const osc = c.createOscillator();
+      const gain = c.createGain();
+      osc.connect(gain); gain.connect(c.destination);
+      osc.type = i < 4 ? 'sine' : 'triangle';
+      osc.frequency.value = freq;
+      const t = c.currentTime + i * 0.09;
+      gain.gain.setValueAtTime(0.28, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
+      osc.start(t); osc.stop(t + 0.22);
+    });
+  });
+}
+
+// 🏅 Achievement — Bells C
+function sfxAchievement() {
+  playSound(c => {
+    [[659,1319],[784,1568]].forEach(([f1,f2], i) => {
+      [f1, f2].forEach(freq => {
+        const osc = c.createOscillator();
+        const gain = c.createGain();
+        osc.connect(gain); gain.connect(c.destination);
+        osc.type = 'sine'; osc.frequency.value = freq;
+        const t = c.currentTime + i * 0.22;
+        gain.gain.setValueAtTime(freq === f1 ? 0.3 : 0.15, t);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+        osc.start(t); osc.stop(t + 0.5);
+      });
+    });
+  });
+}
+
+// 🎨 Theme Unlock — Reveal C
+function sfxThemeUnlock() {
+  playSound(c => {
+    [0, 0.12, 0.24].forEach((delay, i) => {
+      const osc = c.createOscillator();
+      const gain = c.createGain();
+      osc.connect(gain); gain.connect(c.destination);
+      osc.type = 'sine';
+      const startFreq = 400 + i * 200;
+      osc.frequency.setValueAtTime(startFreq, c.currentTime + delay);
+      osc.frequency.exponentialRampToValueAtTime(startFreq * 2.5, c.currentTime + delay + 0.22);
+      gain.gain.setValueAtTime(0.25 - i * 0.06, c.currentTime + delay);
+      gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + delay + 0.28);
+      osc.start(c.currentTime + delay); osc.stop(c.currentTime + delay + 0.28);
+    });
+  });
+}
+
+// ⭐ Stars Awarded — Cascade C (one sweep per star, staggered)
+function sfxStars(count) {
+  playSound(c => {
+    for (let i = 0; i < count; i++) {
+      const delay = i * 0.25;
+      const osc = c.createOscillator();
+      const gain = c.createGain();
+      osc.connect(gain); gain.connect(c.destination);
+      osc.type = 'sine';
+      const base = 600 + i * 200;
+      osc.frequency.setValueAtTime(base, c.currentTime + delay);
+      osc.frequency.exponentialRampToValueAtTime(base * 2, c.currentTime + delay + 0.18);
+      gain.gain.setValueAtTime(0.32, c.currentTime + delay);
+      gain.gain.exponentialRampToValueAtTime(0.001, c.currentTime + delay + 0.25);
+      osc.start(c.currentTime + delay); osc.stop(c.currentTime + delay + 0.25);
+    }
+  });
+}
+
+function toggleMute() {
+  audioMuted = !audioMuted;
+  document.getElementById('muteBtn').textContent = audioMuted ? '🔇' : '🔊';
+}
+
+
 init();
 </script>
 </body>
