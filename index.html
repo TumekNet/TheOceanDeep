@@ -369,12 +369,13 @@ html, body {
 /* ════════════════════════════════
    GAME SCREEN
 ════════════════════════════════ */
-#gameScreen { flex-direction:column; align-items:stretch; justify-content:flex-start; }
+#gameScreen { flex-direction:column; align-items:stretch; justify-content:flex-start; pointer-events:none; }
 .hud {
   position:fixed; top:0; left:0; right:0; z-index:20;
   padding:14px 20px 10px;
   background:linear-gradient(to bottom,rgba(4,10,20,.92) 60%,transparent);
   display:flex; align-items:center; justify-content:space-between;
+  pointer-events:none;
 }
 .hud-score { text-align:center; }
 .hud-score .hud-label {
@@ -403,7 +404,7 @@ html, body {
 .question-display {
   position:fixed; top:76px; left:50%;
   transform:translateX(-50%); z-index:20; text-align:center;
-  white-space:nowrap;
+  white-space:nowrap; pointer-events:none;
 }
 .question-label { font-size:.62rem; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:rgba(200,230,255,.35); margin-bottom:3px; }
 .question-text {
@@ -417,12 +418,13 @@ html, body {
 .combo-display {
   position:fixed; bottom:78px; right:20px;
   text-align:right; z-index:20; opacity:0; transition:opacity .3s;
+  pointer-events:none;
 }
 .combo-display.visible{opacity:1}
 .combo-num { font-family:'Fredoka One',cursive; font-size:1.9rem; color:var(--gold); text-shadow:0 0 18px rgba(255,215,0,.45); }
 .combo-label { font-size:.62rem; letter-spacing:2px; text-transform:uppercase; color:rgba(255,215,0,.45); }
 
-#bubbleArea { position:fixed; inset:0; pointer-events:none; z-index:8; }
+#bubbleArea { position:fixed; inset:0; pointer-events:none; z-index:15; }
 
 .game-bubble {
   position:absolute; bottom:-120px; border-radius:50%;
@@ -432,10 +434,10 @@ html, body {
   user-select:none; touch-action:manipulation;
 }
 .game-bubble:hover { transform:scale(1.07); }
-.bubble-inner { width:100%; height:100%; border-radius:50%; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
-.bubble-shine { position:absolute; top:12%; left:18%; width:30%; height:22%; border-radius:50%; background:rgba(255,255,255,.38); filter:blur(2px); transform:rotate(-30deg); }
-.bubble-shine-2 { position:absolute; bottom:20%; right:14%; width:13%; height:9%; border-radius:50%; background:rgba(255,255,255,.18); filter:blur(1px); }
-.bubble-number { font-family:'Fredoka One',cursive; font-size:1.35rem; color:#fff; text-shadow:0 2px 6px rgba(0,0,0,.4); z-index:1; position:relative; }
+.bubble-inner { width:100%; height:100%; border-radius:50%; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; pointer-events:none; }
+.bubble-shine { position:absolute; top:12%; left:18%; width:30%; height:22%; border-radius:50%; background:rgba(255,255,255,.38); filter:blur(2px); transform:rotate(-30deg); pointer-events:none; }
+.bubble-shine-2 { position:absolute; bottom:20%; right:14%; width:13%; height:9%; border-radius:50%; background:rgba(255,255,255,.18); filter:blur(1px); pointer-events:none; }
+.bubble-number { font-family:'Fredoka One',cursive; font-size:1.35rem; color:#fff; text-shadow:0 2px 6px rgba(0,0,0,.4); z-index:1; position:relative; pointer-events:none; }
 
 @keyframes riseUp {
   0%{transform:translateY(0) translateX(0);opacity:0}
@@ -471,6 +473,7 @@ html, body {
   font-size:1.1rem; cursor:pointer; z-index:25;
   backdrop-filter:blur(10px); transition:all .2s;
   display:flex; align-items:center; justify-content:center;
+  pointer-events:all;
 }
 .pause-btn:hover{border-color:rgba(100,200,255,.45);color:var(--text)}
 
