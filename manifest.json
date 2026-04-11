@@ -1,0 +1,26 @@
+{
+  "name": "Bubble Pop! Ocean Adventure",
+  "short_name": "Bubble Pop!",
+  "description": "A times tables learning game for ocean explorers",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#060d1a",
+  "theme_color": "#060d1a",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": ["education", "games"],
+  "lang": "en-AU"
+}
