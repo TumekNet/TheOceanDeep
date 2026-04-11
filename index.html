@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Bubble Pop! 🌊 Ocean Adventure</title>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
   --ocean-deep: #060d1a;
@@ -653,29 +653,71 @@ html, body {
 .theme-lock-icon { position:absolute; top:8px; right:10px; font-size:.8rem; opacity:.6; }
 .theme-active-badge { position:absolute; top:7px; right:8px; font-size:.75rem; }
 
+
 /* ════════════════════════════════
-   CHARACTER SCREEN (coming soon)
+   CHARACTER CREATOR + ROOM
 ════════════════════════════════ */
-#characterScreen .card {
-  padding:36px 28px; max-width:400px;
-  width:92%; text-align:center;
-}
-.char-preview { font-size:5rem; margin:16px 0; animation:charFloat 3s ease-in-out infinite alternate; }
-@keyframes charFloat{0%{transform:translateY(0)}100%{transform:translateY(-12px)}}
-.coming-soon-badge {
-  display:inline-block; padding:4px 14px; border-radius:20px;
-  background:rgba(167,139,250,.15); border:1px solid rgba(167,139,250,.3);
-  color:#a78bfa; font-size:.72rem; font-weight:700;
-  letter-spacing:2px; text-transform:uppercase; margin-bottom:16px;
-}
-.char-roadmap { text-align:left; margin-top:18px; }
-.char-roadmap-item {
-  display:flex; align-items:center; gap:10px;
-  padding:8px 0; border-bottom:1px solid rgba(100,200,255,.07);
-  font-size:.84rem; color:var(--text-dim);
-}
-.char-roadmap-item .r-icon { font-size:1.1rem; }
-.char-roadmap-item .r-stars { font-size:.72rem; color:var(--gold); margin-left:auto; }
+.creator-step { display:none; }
+.creator-step.active { display:block; }
+.creator-step-title { font-family:'Cinzel',serif; font-size:1.5rem; text-align:center; margin-bottom:4px; background:linear-gradient(135deg,#7ef8ff,#a78bfa,#ffd700); background-size:200% auto; -webkit-background-clip:text; -webkit-text-fill-color:transparent; animation:shimmer 4s linear infinite; }
+@keyframes shimmer{0%{background-position:0%}100%{background-position:200%}}
+.creator-sub { color:var(--text-dim); font-size:.85rem; text-align:center; margin-bottom:18px; }
+.creator-picker-section { margin-bottom:15px; }
+.creator-picker-row { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+.creator-swatch { width:38px; height:38px; border-radius:50%; border:3px solid transparent; cursor:pointer; transition:all .18s; position:relative; flex-shrink:0; }
+.creator-swatch:hover { transform:scale(1.1); }
+.creator-swatch.sel { border-color:#fff; box-shadow:0 0 0 2px rgba(255,255,255,.5),0 0 14px rgba(255,255,255,.3); transform:scale(1.12); }
+.creator-swatch.sel::after { content:'✓'; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#fff; font-size:.75rem; font-weight:900; text-shadow:0 1px 3px rgba(0,0,0,.7); }
+.creator-preview { display:flex; justify-content:center; margin:12px 0 4px; }
+.creator-preview svg { filter:drop-shadow(0 8px 24px rgba(0,150,255,.3)); }
+.step-indicator { display:flex; justify-content:center; gap:8px; margin-bottom:16px; }
+.step-dot { width:8px; height:8px; border-radius:50%; background:rgba(100,200,255,.2); transition:all .3s; }
+.step-dot.active { background:var(--cyan); box-shadow:0 0 8px rgba(0,212,255,.5); }
+.step-dot.done { background:var(--green); }
+
+#characterScreen { overflow-y:auto; flex-direction:column; align-items:stretch; justify-content:flex-start; }
+.char-room-header { position:sticky; top:0; z-index:20; padding:13px 18px 9px; background:linear-gradient(to bottom,rgba(6,13,26,.97) 70%,transparent); display:flex; align-items:center; gap:12px; }
+.char-room-title { font-family:'Cinzel',serif; font-size:1.2rem; flex:1; background:linear-gradient(135deg,#7ef8ff,#a78bfa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.sf-pill { display:flex; align-items:center; gap:5px; background:rgba(255,215,0,.1); border:1px solid rgba(255,215,0,.25); border-radius:20px; padding:5px 12px; font-family:'Fredoka One',cursive; font-size:.95rem; color:var(--gold); }
+.char-room-body { display:flex; flex-direction:column; align-items:center; padding:0 14px 110px; }
+.char-stage { width:100%; max-width:380px; background:linear-gradient(160deg,rgba(0,60,120,.25),rgba(0,30,80,.35)); border:1px solid rgba(100,200,255,.14); border-radius:26px; padding:18px 16px 14px; margin-bottom:12px; display:flex; flex-direction:column; align-items:center; position:relative; overflow:hidden; }
+.char-stage-glow { position:absolute; inset:0; pointer-events:none; background:radial-gradient(ellipse at 50% 0%,rgba(0,180,255,.09) 0%,transparent 60%); }
+.char-name-cinzel { font-family:'Cinzel',serif; font-size:1.2rem; margin-bottom:2px; text-align:center; background:linear-gradient(135deg,#7ef8ff,#ffd700); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.char-rank-title { font-size:.68rem; color:var(--text-dim); margin-bottom:12px; text-align:center; letter-spacing:1px; }
+.mermaid-float { animation:charFloat 3.8s ease-in-out infinite alternate; filter:drop-shadow(0 14px 36px rgba(0,150,255,.4)); }
+@keyframes charFloat{0%{transform:translateY(0)}100%{transform:translateY(-14px)}}
+.char-gear-badges { display:flex; gap:6px; flex-wrap:wrap; justify-content:center; margin-top:10px; min-height:22px; }
+.char-gear-badge { font-size:1.2rem; animation:badgePop .4s cubic-bezier(.34,1.56,.64,1); }
+@keyframes badgePop{0%{transform:scale(0);opacity:0}100%{transform:scale(1);opacity:1}}
+.char-section { width:100%; max-width:380px; background:var(--card-bg); border:1px solid var(--card-border); border-radius:18px; padding:14px 16px; margin-bottom:12px; }
+.char-section-title { font-size:.62rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:rgba(100,200,255,.4); margin-bottom:11px; }
+.char-gear-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:7px; }
+.char-gear-item { border-radius:13px; padding:10px 5px; border:2px solid rgba(100,200,255,.1); background:rgba(100,200,255,.04); text-align:center; cursor:pointer; transition:all .18s; position:relative; }
+.char-gear-item:hover:not(.char-locked) { border-color:rgba(100,200,255,.32); transform:translateY(-2px); }
+.char-gear-item.char-equipped { border-color:var(--gold); background:rgba(255,215,0,.09); box-shadow:0 0 12px rgba(255,215,0,.18); }
+.char-gear-item.char-locked { opacity:.35; cursor:not-allowed; filter:grayscale(.5); }
+.char-gear-icon { font-size:1.5rem; margin-bottom:3px; }
+.char-gear-name { font-size:.68rem; font-weight:700; color:var(--text); line-height:1.2; }
+.char-gear-stars { font-size:.58rem; color:var(--text-dim); margin-top:2px; }
+.char-eq-badge { position:absolute; top:4px; right:5px; font-size:.58rem; color:var(--gold); }
+.char-lock-ico { position:absolute; top:4px; right:5px; font-size:.6rem; opacity:.45; }
+.colour-edit-row { display:flex; gap:8px; margin-top:8px; overflow-x:auto; padding-bottom:3px; }
+.colour-edit-row::-webkit-scrollbar { height:2px; }
+.swatch-sm-char { width:34px; height:34px; border-radius:50%; flex-shrink:0; border:3px solid transparent; cursor:pointer; transition:all .16s; }
+.swatch-sm-char:hover { transform:scale(1.1); }
+.swatch-sm-char.sel { border-color:#fff; box-shadow:0 0 10px rgba(255,255,255,.4); }
+.char-shop-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.char-shop-item { border-radius:13px; padding:10px 8px; border:1px solid rgba(255,215,0,.14); background:rgba(255,215,0,.04); text-align:center; cursor:pointer; transition:all .18s; }
+.char-shop-item:hover:not(.no-afford):not(.owned-item) { border-color:rgba(255,215,0,.35); background:rgba(255,215,0,.09); }
+.char-shop-item.no-afford { opacity:.4; cursor:not-allowed; }
+.char-shop-item.owned-item { border-color:rgba(0,255,170,.25); background:rgba(0,255,170,.06); }
+.char-nav { position:sticky; bottom:0; z-index:20; padding:9px 14px 14px; background:linear-gradient(to top,rgba(6,13,26,.98) 70%,transparent); display:flex; gap:7px; justify-content:center; }
+.char-nav-btn { flex:1; max-width:130px; padding:9px 6px; border-radius:13px; border:1px solid rgba(100,200,255,.16); background:rgba(8,22,46,.9); color:var(--text-dim); font-family:'Nunito',sans-serif; font-weight:700; font-size:.75rem; cursor:pointer; transition:all .18s; text-align:center; }
+.char-nav-btn.active { border-color:var(--cyan); color:var(--cyan); background:rgba(0,212,255,.09); }
+.char-nav-icon { font-size:1.15rem; display:block; margin-bottom:2px; }
+.campaign-mermaid-wrap { display:flex; justify-content:center; padding:6px 0 0; }
+.campaign-mermaid-wrap svg { animation:charFloat 3.8s ease-in-out infinite alternate; filter:drop-shadow(0 6px 16px rgba(0,150,255,.35)); }
+
 
 /* ════════════════════════════════
    SYNC STATUS
@@ -715,13 +757,56 @@ html, body {
 
 <div class="sync-status" id="syncStatus"></div>
 
-<!-- ══════════ NAME SCREEN ══════════ -->
+<!-- ══════════ NAME + MERMAID CREATOR ══════════ -->
 <div class="screen" id="nameScreen">
-  <div class="card">
-    <div class="name-title">🌊 Bubble Pop!</div>
-    <div class="name-sub">Ocean Adventure — what's your name, explorer?</div>
-    <input class="name-input" id="nameInput" type="text" placeholder="Enter your name..." maxlength="20" autocomplete="off"/>
-    <button class="btn-primary" id="nameConfirmBtn" disabled>Start Adventure! 🌊</button>
+  <div class="card" style="padding:28px 24px;max-width:480px;width:92%;max-height:94vh;overflow-y:auto">
+    <div class="step-indicator">
+      <div class="step-dot active" id="dot0"></div>
+      <div class="step-dot" id="dot1"></div>
+    </div>
+
+    <!-- Step 1: Player name -->
+    <div class="creator-step active" id="creatorStep0">
+      <div class="creator-step-title">🌊 Bubble Pop!</div>
+      <div class="creator-sub">Ocean Adventure — what's your name, explorer?</div>
+      <input class="name-input" id="nameInput" type="text" placeholder="Your name..." maxlength="20" autocomplete="off" style="margin-bottom:16px"/>
+      <button class="btn-primary" id="nameNextBtn" disabled>Next →</button>
+    </div>
+
+    <!-- Step 2: Mermaid creator -->
+    <div class="creator-step" id="creatorStep1">
+      <div class="creator-step-title">Create Your Mermaid</div>
+      <div class="creator-sub">She'll swim beside you through every level</div>
+      <div class="creator-picker-section">
+        <div class="section-label">Mermaid Name</div>
+        <input class="name-input" id="mermaidNameInput" type="text" placeholder="Give her a name..." maxlength="18" autocomplete="off" style="margin-top:8px;font-family:'Cinzel',serif;font-size:1.1rem"/>
+      </div>
+      <div class="creator-picker-section">
+        <div class="section-label">Skin Tone</div>
+        <div class="creator-picker-row" id="cSkinPicker"></div>
+      </div>
+      <div class="creator-picker-section">
+        <div class="section-label">Hair Colour</div>
+        <div class="creator-picker-row" id="cHairPicker"></div>
+      </div>
+      <div class="creator-picker-section">
+        <div class="section-label">Eye Colour</div>
+        <div class="creator-picker-row" id="cEyePicker"></div>
+      </div>
+      <div class="creator-picker-section">
+        <div class="section-label">Tail Colour</div>
+        <div class="creator-picker-row" id="cTailPicker"></div>
+      </div>
+      <div class="creator-picker-section">
+        <div class="section-label">Top Colour</div>
+        <div class="creator-picker-row" id="cTopPicker"></div>
+      </div>
+      <div class="creator-preview" id="creatorPreview"></div>
+      <div style="display:flex;gap:10px;margin-top:8px">
+        <button class="btn-secondary" id="creatorBackBtn" style="flex:1">← Back</button>
+        <button class="btn-primary" id="creatorConfirmBtn" style="flex:2" disabled>Let's dive in! 🧜‍♀️</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -770,6 +855,7 @@ html, body {
     <div class="campaign-title" id="campaignPlayerTitle">Ocean Adventure</div>
     <div class="campaign-total-stars" id="campaignStarsDisplay">⭐ 0/30</div>
   </div>
+  <div class="campaign-mermaid-wrap" id="campaignMermaidPreview"></div>
   <div class="campaign-map" id="campaignMap"></div>
 </div>
 
@@ -906,24 +992,27 @@ html, body {
   </div>
 </div>
 
-<!-- ══════════ CHARACTER ══════════ -->
+<!-- ══════════ CHARACTER ROOM ══════════ -->
 <div class="screen hidden" id="characterScreen">
-  <div class="card">
-    <div class="scores-header">
-      <div class="scores-title">🧜 My Character</div>
-      <button class="btn-secondary" id="charBackBtn">← Back</button>
+  <div class="char-room-header">
+    <div class="char-room-title" id="charRoomTitle">My Mermaid</div>
+    <div class="sf-pill">🌟 <span id="charSfCount">0</span></div>
+    <button class="btn-secondary" id="charBackBtn" style="padding:8px 14px;font-size:.8rem">← Back</button>
+  </div>
+  <div class="char-room-body">
+    <div class="char-stage">
+      <div class="char-stage-glow"></div>
+      <div class="char-name-cinzel" id="charStageName">—</div>
+      <div class="char-rank-title" id="charRankTitle">Ocean Explorer</div>
+      <div class="mermaid-float" id="charMermaidDisplay"></div>
+      <div class="char-gear-badges" id="charGearBadges"></div>
     </div>
-    <div class="char-preview">🧜‍♀️</div>
-    <div class="coming-soon-badge">Coming Soon</div>
-    <p style="color:var(--text-dim);font-size:.88rem;line-height:1.6">Your mermaid will earn gear, outfits and accessories as you conquer the ocean. Keep collecting stars!</p>
-    <div class="char-roadmap">
-      <div class="section-label" style="margin-top:16px">Planned Unlocks</div>
-      <div class="char-roadmap-item"><span class="r-icon">👑</span> Crown <span class="r-stars">10 ⭐</span></div>
-      <div class="char-roadmap-item"><span class="r-icon">💎</span> Crystal Necklace <span class="r-stars">15 ⭐</span></div>
-      <div class="char-roadmap-item"><span class="r-icon">🌈</span> Rainbow Tail <span class="r-stars">20 ⭐</span></div>
-      <div class="char-roadmap-item"><span class="r-icon">🌟</span> Starfish Clip <span class="r-stars">25 ⭐</span></div>
-      <div class="char-roadmap-item"><span class="r-icon">🔱</span> Golden Trident <span class="r-stars">30 ⭐</span></div>
-    </div>
+    <div id="charTabPanels"></div>
+  </div>
+  <div class="char-nav">
+    <button class="char-nav-btn active" id="charNavGear"    onclick="setCharTab('gear')">   <span class="char-nav-icon">👑</span>Gear</button>
+    <button class="char-nav-btn"        id="charNavColours" onclick="setCharTab('colours')"><span class="char-nav-icon">🎨</span>Colours</button>
+    <button class="char-nav-btn"        id="charNavShop"    onclick="setCharTab('shop')">   <span class="char-nav-icon">🌟</span>Shop</button>
   </div>
 </div>
 
@@ -1140,6 +1229,11 @@ let player = {
   campaign: { levelStars:[], unlockedThemes:['default'], currentTheme:'default' },
   achievements: [],
   highScores: [],
+  character: {
+    mermaidName:'', skin:'s3', hair:'h1', eye:'e1', tail:'t1', top:'top1',
+    equipped:{ head:'h_none', neck:'n_none', tail:'tail_base', held:'held_none' },
+    shopOwned:[], starfish:0,
+  },
 };
 
 let gameState = {
@@ -1194,6 +1288,11 @@ async function init() {
         player.campaign = row.campaign || player.campaign;
         player.achievements = row.achievements || [];
         player.highScores = row.high_scores || [];
+        player.character = row.character || player.character;
+        // Ensure character has all required fields (migration safety)
+        if (!player.character.equipped) player.character.equipped = { head:'h_none', neck:'n_none', tail:'tail_base', held:'held_none' };
+        if (!player.character.shopOwned) player.character.shopOwned = [];
+        if (!player.character.starfish) player.character.starfish = 0;
         setSyncStatus('ok');
         showScreen('menuScreen');
         refreshMenu();
@@ -1221,6 +1320,7 @@ async function savePlayer() {
       campaign: player.campaign,
       achievements: player.achievements,
       high_scores: player.highScores,
+      character: player.character,
     });
     setSyncStatus('ok');
   } catch(e) {
@@ -1239,6 +1339,7 @@ async function createPlayer(name) {
       campaign: player.campaign,
       achievements: [],
       high_scores: [],
+      character: player.character,
     });
     player.id = id;
     player.name = name;
@@ -1297,12 +1398,24 @@ function hideModal(id) { document.getElementById(id).classList.remove('visible')
 // WIRE BUTTONS
 // ═══════════════════════════════════════════════════════
 function wireButtons() {
-  // Name screen
+  // Name screen step 1
   const ni = document.getElementById('nameInput');
-  const nb = document.getElementById('nameConfirmBtn');
+  const nb = document.getElementById('nameNextBtn');
   ni.addEventListener('input', () => nb.disabled = ni.value.trim().length < 2);
-  ni.addEventListener('keydown', e => { if (e.key==='Enter' && !nb.disabled) confirmName(); });
-  nb.addEventListener('click', confirmName);
+  ni.addEventListener('keydown', e => { if (e.key==='Enter' && !nb.disabled) goToCreatorStep1(); });
+  nb.addEventListener('click', goToCreatorStep1);
+
+  // Creator step 2
+  document.getElementById('creatorBackBtn').addEventListener('click', goToCreatorStep0);
+  const mn = document.getElementById('mermaidNameInput');
+  mn.addEventListener('input', () => {
+    document.getElementById('creatorConfirmBtn').disabled = mn.value.trim().length < 2;
+  });
+  document.getElementById('creatorConfirmBtn').addEventListener('click', confirmCreator);
+
+  // Character room nav
+  document.getElementById('menuCharBtn').addEventListener('click', () => { openCharRoom(); showScreen('characterScreen'); });
+  document.getElementById('charBackBtn').addEventListener('click', () => showScreen('menuScreen'));
 
   // Menu
   document.getElementById('menuCampaignBtn').addEventListener('click', () => { buildCampaignMap(); showScreen('campaignScreen'); });
@@ -1310,7 +1423,6 @@ function wireButtons() {
   document.getElementById('menuScoresBtn').addEventListener('click', () => { renderScores(); showScreen('scoresScreen'); });
   document.getElementById('menuAchBtn').addEventListener('click', () => { renderAchievements(); showScreen('achievementsScreen'); });
   document.getElementById('menuThemesBtn').addEventListener('click', () => { renderThemes(); showScreen('themesScreen'); });
-  document.getElementById('menuCharBtn').addEventListener('click', () => showScreen('characterScreen'));
 
   // Campaign
   document.getElementById('campaignBackBtn').addEventListener('click', () => showScreen('menuScreen'));
@@ -1346,22 +1458,373 @@ function wireButtons() {
   document.getElementById('scoresBackBtn').addEventListener('click', () => showScreen('menuScreen'));
   document.getElementById('achBackBtn').addEventListener('click', () => showScreen('menuScreen'));
   document.getElementById('themesBackBtn').addEventListener('click', () => showScreen('menuScreen'));
-  document.getElementById('charBackBtn').addEventListener('click', () => showScreen('menuScreen'));
   document.getElementById('scoresClearBtn').addEventListener('click', clearScores);
 }
 
 // ═══════════════════════════════════════════════════════
-// NAME SCREEN
+// CHARACTER PALETTES + SVG DATA
 // ═══════════════════════════════════════════════════════
-async function confirmName() {
+const CHAR_SKINS = [
+  {id:'s1', label:'Fair',       skin:'#FDDBB4', shadow:'#D4956A', lips:'#E8A090'},
+  {id:'s2', label:'Light',      skin:'#F5C28A', shadow:'#C4845A', lips:'#DE9080'},
+  {id:'s3', label:'Medium',     skin:'#fbc19f', shadow:'#b07150', lips:'#fbae9f'},
+  {id:'s4', label:'Tan',        skin:'#C47C3E', shadow:'#8a4c14', lips:'#B06050'},
+  {id:'s5', label:'Deep',       skin:'#8D4E20', shadow:'#5a2808', lips:'#804030'},
+  {id:'s6', label:'Rich',       skin:'#5C2E0E', shadow:'#331200', lips:'#562820'},
+  {id:'s7', label:'Sea Foam',   skin:'#A8D8C8', shadow:'#5a9c88', lips:'#7ab8a0'},
+  {id:'s8', label:'Ocean Teal', skin:'#6BBFB0', shadow:'#2e8878', lips:'#50a890'},
+  {id:'s9', label:'Deep Teal',  skin:'#3A8C80', shadow:'#1a5c54', lips:'#2e7868'},
+  {id:'s10',label:'Coral',      skin:'#F0A090', shadow:'#c06050', lips:'#e07060'},
+  {id:'s11',label:'Lavender',   skin:'#C0A8D8', shadow:'#8878b0', lips:'#a888c8'},
+  {id:'s12',label:'Midnight',   skin:'#4A6880', shadow:'#243848', lips:'#3a5870'},
+];
+const CHAR_HAIRS = [
+  {id:'h1', label:'Black',      col:'#1C1008'},
+  {id:'h2', label:'Dark Brown', col:'#2a1505'},
+  {id:'h3', label:'Brown',      col:'#5c2e0e'},
+  {id:'h4', label:'Blonde',     col:'#8a6010'},
+  {id:'h5', label:'Red',        col:'#8a1010'},
+  {id:'h6', label:'Pink',       col:'#882244'},
+  {id:'h7', label:'Teal',       col:'#004444'},
+  {id:'h8', label:'Purple',     col:'#3d1066'},
+];
+const CHAR_EYES = [
+  {id:'e1', label:'Brown',      col:'#995128'},
+  {id:'e2', label:'Dark Brown', col:'#5c2e0e'},
+  {id:'e3', label:'Hazel',      col:'#7a5c28'},
+  {id:'e4', label:'Green',      col:'#2e7d32'},
+  {id:'e5', label:'Blue',       col:'#1565c0'},
+  {id:'e6', label:'Grey',       col:'#546e7a'},
+  {id:'e7', label:'Violet',     col:'#6a1b9a'},
+  {id:'e8', label:'Teal',       col:'#00695c'},
+];
+const CHAR_TAILS = [
+  {id:'t1', label:'Ocean Blue', main:'#274553', border:'#b6e3cc', fin:'#1a3040'},
+  {id:'t2', label:'Teal',       main:'#1a6060', border:'#80e8cc', fin:'#0d4040'},
+  {id:'t3', label:'Purple',     main:'#4a2080', border:'#c8a0f0', fin:'#2d1050'},
+  {id:'t4', label:'Emerald',    main:'#1a5c30', border:'#80e0a0', fin:'#0d3a1c'},
+  {id:'t5', label:'Rose',       main:'#8c2050', border:'#f0a0c0', fin:'#5a1030'},
+  {id:'t6', label:'Gold',       main:'#7a5000', border:'#f0d080', fin:'#503400'},
+];
+const CHAR_TOPS = [
+  {id:'top1', label:'Red',     col:'#e0343c'},
+  {id:'top2', label:'Pink',    col:'#e0347a'},
+  {id:'top3', label:'Blue',    col:'#1a6abf'},
+  {id:'top4', label:'Purple',  col:'#7b1fa2'},
+  {id:'top5', label:'Amber',   col:'#e65100'},
+  {id:'top6', label:'Teal',    col:'#00796b'},
+  {id:'top7', label:'Gold',    col:'#f9a825'},
+  {id:'top8', label:'Navy',    col:'#1a237e'},
+];
+const CHAR_GEAR = {
+  head:[
+    {id:'h_none',    icon:'',   name:'None',           starsNeeded:0},
+    {id:'h_flower',  icon:'🌸', name:'Flower Crown',   starsNeeded:6},
+    {id:'h_gold',    icon:'👑', name:'Golden Crown',   starsNeeded:10},
+    {id:'h_star',    icon:'⭐', name:'Starfish Clip',  starsNeeded:25},
+    {id:'h_pearl',   icon:'🤍', name:'Pearl Tiara',    starsNeeded:28},
+  ],
+  neck:[
+    {id:'n_none',    icon:'',   name:'None',              starsNeeded:0},
+    {id:'n_crystal', icon:'💎', name:'Crystal Necklace',  starsNeeded:15},
+    {id:'n_pearl',   icon:'🧊', name:'Pearl Strand',      starsNeeded:22},
+    {id:'n_shell',   icon:'🐚', name:'Shell Choker',      starsNeeded:18},
+  ],
+  tail:[
+    {id:'tail_base',   icon:'🐟', name:'Natural',      starsNeeded:0},
+    {id:'tail_silver', icon:'🩶', name:'Silver Tail',  starsNeeded:3},
+    {id:'tail_rainbow',icon:'🌈', name:'Rainbow Tail', starsNeeded:12},
+    {id:'tail_glitter',icon:'✨', name:'Glitter Tail', starsNeeded:20},
+  ],
+  held:[
+    {id:'held_none',    icon:'',   name:'None',         starsNeeded:0},
+    {id:'held_shell',   icon:'🐚', name:'Conch Shell',  starsNeeded:8},
+    {id:'held_star',    icon:'⭐', name:'Wishing Star', starsNeeded:20},
+    {id:'held_trident', icon:'🔱', name:'Trident',      starsNeeded:30},
+  ],
+};
+const CHAR_SHOP = [
+  {id:'bg_sunset', icon:'🌅', name:'Sunset Glow',  cost:15, desc:'Warm backdrop'},
+  {id:'bg_night',  icon:'🌙', name:'Night Ocean',  cost:15, desc:'Moonlit waves'},
+  {id:'bg_reef',   icon:'🪸', name:'Coral Reef',   cost:20, desc:'Colourful reef'},
+  {id:'trail_bub', icon:'💧', name:'Bubble Trail', cost:10, desc:'Tiny bubbles'},
+  {id:'trail_star',icon:'⭐', name:'Star Trail',   cost:10, desc:'Sparkling orbit'},
+  {id:'frame_gold',icon:'🖼️', name:'Gold Frame',   cost:25, desc:'Ornate border'},
+];
+
+// Illustrator SVG path data
+const MP = {
+'HAIR-LENGTH':`M190.1,68.73c-.45-5.3-1.04-10.59-1.95-15.81-.93-5.31-2.19-10.59-4.11-15.57-1.83-4.75-4.25-9.38-7.61-13.05-.84-.92-1.73-1.78-2.65-2.59-.07-.06-.22.07-.14.14.77.76,1.49,1.56,2.19,2.38-.45-.44-.92-.87-1.42-1.26-1.48-1.16-3.12-2.06-4.85-2.72-4.43-1.7-9.04-2.93-13.63-3.99-9.34-2.16-18.88-3.54-28.42-4.29-9.81-.77-19.7-.71-29.49.52-4.18.53-8.25,1.28-12.16,3.04-3.48,1.57-6.7,3.74-9.65,6.28-3.1,2.66-6.18,5.67-8.49,9.16-1.39,2.11-2.49,4.43-3.39,6.83.22-.68.46-1.36.73-2.03.42-1.04.94-2.03,1.53-2.97.04-.07-.05-.08-.09-.03-2.48,3.82-3.68,8.16-4.42,12.64-.05.19-.1.38-.14.56-.01.05,0,.08.04.09-.73,4.74-.99,9.63-1.73,14.26-.85,5.37-2.51,10.59-5.04,15.32-2.55,4.78-5.91,9.02-9.56,12.86-7.08,7.43-15.22,13.59-23,20.11-7.51,6.29-15.21,13.28-19.45,22.7-2.22,4.94-3.34,10.42-3.15,15.9.08,2.37.4,4.74.9,7.04.47,2.18,1.12,4.38,2.16,6.32.46.86,1,1.64,1.66,2.34.17.18.54-.11.49-.34-.76-3.46-1.81-6.84-2.41-10.34-.59-3.46-.56-7.01.09-10.46,1.26-6.75,5.23-12.36,9.75-17.05,4.66-4.83,10.01-8.79,15.56-12.32.77-.49,1.54-.97,2.31-1.45-4.12,4.06-8.18,8.19-11.82,12.77-4.81,6.06-8.79,12.99-10.64,20.77-2,8.42-1.48,17.47.88,25.7,1.1,3.85,2.72,7.36,5.04,10.52,2.2,3,4.8,5.59,7.43,8.13.68.65,1.36,1.3,2.03,1.96.22.22.64-.16.52-.44-.69-1.63-1.7-3.07-2.64-4.53-1.04-1.61-1.89-3.25-2.53-5.1-1.16-3.38-1.87-6.93-2-10.54.27.72.57,1.43.88,2.12,1.99,4.37,4.95,8.14,8.27,11.39,3.29,3.22,7.02,5.83,10.59,8.67,3.46,2.75,6.82,5.76,9.32,9.58,1.94,2.98,3.2,6.28,3.76,9.88.49,3.16.53,6.47-.19,9.6-.66,2.87-2.11,5.63-4.61,7.03-1.38.77-3.1,1.2-4.64.96-1.82-.29-3.53-1.55-4.37-3.33-.43-.91-.59-1.95-.45-2.97.13-.88.47-1.94,1.16-2.51.88-.74,2.19-.07,2.57.96.16.42.11.88-.26,1.15-.32.23-.21.68.2.55,1.8-.6,2.87-2.52,2.24-4.49-.65-2.01-2.69-2.99-4.57-2.52-1.99.5-3.36,2.39-4.06,4.37-.78,2.2-.77,4.67-.15,6.91,1.27,4.52,5.25,6.72,9.17,7.99,2.61.85,5.27,1.05,7.9.09.15-.06.3-.12.46-.19-.21.17-.43.33-.65.48-3.11,2.22-6.98,3.47-10.66,2.49-2.24-.6-4.21-1.96-5.84-3.7-.21-.22-.65.1-.67.36-.31,4.17,2.02,8.1,4.54,10.99,2.81,3.23,6.35,5.52,10.36,6.53,4.47,1.12,9.23.62,13.46-1.37,2.74-1.29,5.23-3.28,7.34-5.62-.51.96-1.08,1.89-1.73,2.77-.08.11-.09.36.08.39,1.74.38,3.31-1.02,4.42-2.31,1.39-1.61,2.5-3.48,3.51-5.38.91-1.72,1.75-3.51,2.48-5.34,3.02-1.64,5.51-4.46,7.37-7.44,2.22-3.58,3.76-7.63,4.78-11.78,1.08-4.35,1.55-8.79,1.47-13.28-.05-3.04-.26-6.08-.23-9.13.03-3.05.35-6.07,1.18-9,.33-1.18.73-2.33,1.16-3.47-.15,2.05-.03,4.14.49,6.12.56,2.15,1.58,4.03,3.05,5.59.99,1.04,2.09,1.94,3.17,2.86.21.34.45.65.73.93.36.36.78.64,1.21.89h0s0,0,0,0c.01,0,.03.02.04.02.17.1.45-.2.3-.37-.51-.55-1.05-1.05-1.6-1.54-.85-1.36-1.2-3.19-1.33-4.72-.22-2.56-.03-5.18.48-7.7.64-3.12,2.01-6.11,3.59-8.8,1.81-3.07,4.04-5.82,6.49-8.32,5.27-5.38,11.41-9.78,17.61-13.77,5.94-3.83,12.05-7.35,17.95-11.26-.12.18-.25.36-.37.54-2.64,3.97-4.78,8.82-4.22,13.8.07.66.18,1.32.3,1.98.23.7.56,1.35,1,1.88,0-8.9,7.24-16.04,13.54-21.21,3.91-3.21,7.98-6.16,11.7-9.64,4.02-3.77,7.71-7.95,10.95-12.52,6.36-8.98,10.86-19.5,12.43-30.68.8-5.68.71-11.32.22-17.01Z`,
+'R-ARM':`M173.68,136.71c-.08.44-.27.89-.4,1.32-.29.98-.56,1.97-.78,2.98-.15.69-.27,1.39-.38,2.09-.38,1.77-.42,3.63-.39,5.41.02,1.17.08,2.34.11,3.51.02.99.04,1.97.09,2.96-.06.1-.13.19-.2.28.01.14.03.29.04.43.33,3.38.56,6.77.66,10.16.08,2.69-.14,5.31-.82,7.9-.1.17-.2.33-.3.49-.23.39-.45.78-.75,1.12-.62.71-1.45,1.22-2.34,1.51-.93.3-1.9.34-2.87.19-.53-.08-1.08-.19-1.61-.32-.09-.05-.19-.09-.28-.14-.47-.21-.94-.41-1.41-.63-2.79-1.31-5.43-2.96-8.05-4.58-1.29-.8-2.58-1.62-3.85-2.46-1-.67-2.03-1.32-2.97-2.08-1.3-1.05-2.56-2.14-4-2.98-.58-.33-1.3-.69-2.02-.82.09-.85.2-1.7.24-2.55.07-1.68.01-3.36.05-5.05.08-3.12.31-6.23.52-9.34.05-.73.11-1.46.24-2.17.12-.63.32-1.21.55-1.8,1.12.16,2.19,1.27,2.93,2.11,1.28,1.47,2.35,3.14,3.55,4.69,3.44,4.43,7.07,8.73,11.19,12.54-.24,1.11-.44,2.23-.57,3.36-.25,2.22-.19,4.52.46,6.65-.05-.21-.09-.41-.13-.62-.31-1.71-.33-3.47-.15-5.19.09-.87.22-1.73.41-2.58.13-.6.28-1.2.49-1.78,0,0,0,0,0,0,.4-1.81.91-3.57,1.4-5.23.9-3.03,1.84-6.05,2.7-9.09.78-2.77,1.45-5.62,1.44-8.52.1-.66.05-1.37-.07-2.01-.05-.27-.19-.7.04-.92.3-.29.93-.31,1.32-.32.95-.04,1.94.02,2.88.15.51.07,1.02.17,1.53.3.32.08.64.14.95.27.35.15.61.35.54.76Z`,
+'R-HAND':`M199.13,118.64c.05-.42-.09-.89-.54-1-.31-.08-.66-.01-.99.11.25-.56.28-1.29-.41-1.44-.56-.12-1.2.16-1.69.41-.58.29-1.11.67-1.65,1.03-.19.13-.38.27-.57.41.21-.41.16-.86-.36-1.02-.58-.17-1.22.01-1.73.28-.86.45-1.58,1.12-2.34,1.72-.85.67-1.69,1.34-2.54,2.02-1.56,1.26-3.12,2.57-4.95,3.43-.94.44-1.86.94-2.81,1.35-.91.39-1.83.74-2.72,1.16-.04-.27-.03-.54.09-.83.28-.68.79-1.26,1.15-1.9.38-.67.7-1.38.91-2.12.24-.91.45-2.47-.42-3.15-.41-.32-.99-.3-1.3.13-.17.22-.25.5-.33.77-.12.37-.24.74-.4,1.1-.6,1.4-1.58,2.53-2.7,3.54-2.06,1.87-4.5,3.43-5.86,5.93-.8,1.48-1.28,3.21-1.21,4.89.04.83.2,1.68.57,2.43.14.28.3.53.48.77-.05-.29-.01-.58.2-.82.11-.13.27-.08.34.05.25.47.46.97.78,1.4.35.49.81.79,1.36,1.03.57.25,1.18.39,1.77.58.25.08.49.17.73.26,1.57-.02,3.13-.43,4.59-.95,2.1-.74,3.94-1.94,5.77-3.19,1.95-1.33,3.96-2.57,5.91-3.88.8-.54,1.66-1.03,2.44-1.6.83-.61,1.32-1.46,1.93-2.27,1.37-1.84,2.93-3.49,4.65-5.01.39-.35.8-.68,1.21-1.01.31-.25.59-.53.74-.9.14-.34.24-.83-.2-.99-.4-.15-.91.02-1.3.14-.13.04-.26.09-.38.14.33-.39.61-.86.9-1.24.39-.53.81-1.11.89-1.78Z`,
+'L-ARM':`M86.8,190.4c-.04.12-.09.24-.13.36-.41,1.19-1.07,2.34-1.91,3.31,0,.01-.02.03-.03.04-1.67,2.55-3.73,4.82-5.88,6.97-2.26,2.25-4.61,4.42-6.99,6.54-2.84,2.53-5.76,4.98-8.36,7.76-.4.43-.8.87-1.18,1.33-.06-.17-.12-.33-.19-.5,0,0,0,0,0,0,0,.29.03.58.07.87.04.37.06.75.07,1.12.1.5.2,1,.23,1.51.08,1.24-.16,2.37-.44,3.56-.28,1.22-.58,2.42-1.03,3.59-.44,1.14-.96,2.24-1.39,3.38-.42,1.12-.86,2.23-1.13,3.39-.12.54-.17,1.08-.18,1.63,0,.33,0,.65,0,.98,0,.11,0,.9-.09.93-.18.08-.94-.68-1.04-.79-.41-.42-.71-.94-.92-1.48-.33-.86-.35-1.79-.27-2.69.01-.02.03-.05.03-.08.03-.3.06-.59.09-.89.14-.95.3-1.91.32-2.85,0-.08.02-.16.02-.24.05-.68.05-1.33-.08-2-.05-.26-.11-.51-.17-.76.12-.14.25-.27.37-.41.18-.22.37-.42.53-.66-.26.2-.51.42-.77.63-.34.28-.69.55-1.03.82-.7.64-1.39,1.28-2.06,1.95-.6.58-1.26,1.12-1.9,1.68-.48.37-.89.79-1.24,1.26-.21.26-.41.52-.59.81-.03.05-.03.09-.03.12-.11.2-.22.4-.33.61-1.15,2.32-1.56,4.88-2.47,7.28-.38,1-.98,2.35-2.05,2.78-.15.06-.4.15-.56.07-.26-.13-.16-.48-.13-.7.11-.8.31-1.59.51-2.38.77-2.98,1.31-5.99,1.88-9.01.16-.83.26-1.73.54-2.54.27-.77.85-1.4,1.35-2.03,1.09-1.36,2.29-2.61,3.4-3.96.07-.09-.01-.18-.1-.09-1.25,1.21-2.48,2.43-3.59,3.77-.42.51-.86,1.01-1.19,1.59-.36.62-.47,1.29-.61,1.99-.68,3.44-1.24,6.89-2.11,10.29-.17.67-.34,1.35-.46,2.03,0,.02,0,.04-.01.06-.04-.02-.08-.02-.14.02-.54.46-.42-.74-.4-.93.05-.41.14-.81.23-1.21.17-.79.26-1.59.29-2.39.06-1.7-.14-3.39-.23-5.08-.05-.89-.12-1.82.12-2.7.2-.73.53-1.43.82-2.13.65-1.61,1.49-3.16,1.95-4.84,0-.04-.03-.03-.04,0-.89,1.84-1.8,3.67-2.61,5.56-.34.8-.68,1.62-.71,2.49-.03.94.04,1.89.11,2.83.07,1,.16,2.01.19,3.02-.02.02-.05.04-.06.07-.35.79-.71,1.55-1.25,2.24-.24.31-1.03,1.39-1.38.76-.21-.38-.08-.98-.02-1.37.07-.49.19-.97.31-1.45.36-1.44.49-2.93.6-4.41.06-.89.06-1.8.19-2.68.12-.86.43-1.67.8-2.46.45-.95.99-1.85,1.5-2.77.39-.71.64-1.49,1.22-2.08.02-.02.01-.06-.02-.04-.63.29-.94,1.08-1.25,1.65-.5.91-1.12,1.76-1.59,2.69-.16.32-.32.64-.46.97-.04.01-.09.04-.12.08-.7.98-1.7,1.84-2.68,2.53-.54.38-1.16.75-1.83.84-.48.06-1.26-.12-1.27-.72-.01-.49.61-.85.95-1.13.51-.42,1.02-.83,1.53-1.24.93-.74,1.79-1.55,2.62-2.41,1.74-1.81,3.35-3.77,5.35-5.3,2.05-1.57,4.37-2.79,6.71-3.87,1.3-.6,2.61-1.19,3.9-1.82.1-.05.21-.11.31-.16.35-.2.72-.37,1.08-.57.02-.02.04-.04.06-.06,0,0,0,0,0,0,.05-.11.1-.21.16-.31,0,0,0,0,0,0,.43-1.01.88-2.01,1.3-3.01,1.14-2.71,2.5-5.33,4.09-7.8,3.31-5.13,7.48-9.68,11.32-14.41,1.95-2.4,3.66-4.95,5.26-7.59,1.58-2.61,3.12-5.23,4.51-7.94,2.68-5.21,5.17-10.51,7.88-15.71,1.45-2.78,2.98-5.56,5.01-7.98,1.48-1.77,3.19-3.86,5.37-4.84.09,0,.18-.02.28-.01.24.01.47.07.69.18.14.07.27.14.4.22.26.42.3,1.04.32,1.55.04,1.41.65,2.84.4,4.21-.63,3.47-2.46,6.9-2.51,10.45-.02,1.44.2,2.86.49,4.27.12.58.26,1.15.43,1.71-1.35,3.14-3.01,6.1-4.97,8.94-1.41,2.04-2.85,4.06-4.33,6.05-1.48,2.01-2.96,4.02-4.59,5.92-.78.91-1.57,1.79-2.38,2.68`,
+'BODY':`M136.68,187.93c.22,1.75.86,3.39,1.86,4.84,1.07,1.55,2.43,2.89,3.73,4.24,1.43,1.47,2.78,3,3.98,4.66.99,1.37,1.84,2.81,2.67,4.28.09.47.31.88.54,1.3.34.64.44,1.27.42,1.98-.03,1.06-.39,2.07-1.01,2.93-1.17,1.63-2.98,2.68-4.68,3.68-2.15,1.26-4.28,2.53-6.54,3.59-2.46,1.16-5.01,2.12-7.62,2.9-2.64.79-5.32,1.4-8.04,1.85-2.32.38-4.68.5-7.02.25-4.67-.5-9.18-2.51-12.66-5.67-2.06-1.87-3.82-4.35-4.19-7.17-.39-2.93.98-5.42,2.68-7.68.03-.05.02-.08,0-.1,1.4-1.95,2.91-3.82,4.33-5.77,1.87-2.59,3.51-5.43,4.03-8.62.62-3.85-.57-7.64-1.93-11.21-1.35-3.54-2.77-7.04-3.72-10.71-.39-1.51-.7-3.05-.88-4.6-.09-.45-.17-.91-.23-1.37-.01-.49-.02-.98-.02-1.47.02-1.33.16-2.59.41-3.9.24-1.28.56-2.49,1.06-3.69.45-1.07.92-2.13,1.27-3.23.03-.09-.11-.07-.14,0-.51,1.19-1.22,2.28-1.75,3.46-.53,1.18-.83,2.43-1.09,3.69-.33,1.59-.43,3.2-.32,4.8-.28-.85-.48-1.73-.68-2.62-.39-1.74-.61-3.51-.66-5.3-.05-1.75.02-3.53.28-5.27.12-.78.22-1.62.6-2.32.34-.65.87-1.18,1.44-1.64,2.56-2.04,5.8-2.16,8.9-2.69,1.58-.27,3.1-.75,4.64-1.21,1.17-.35,2.21-.78,2.78-1.92,1.17-2.35.66-5.18.17-7.68.03.03.09-.02.08-.06-.08-.38-.14-.9.1-1.23.26-.36.78-.49,1.19-.6,1.16-.31,2.38-.33,3.58-.36,1.05-.02,2.1-.11,3.15-.07.52.02,1.05.07,1.56.19.29.07.59.15.87.26.26.09.49.1.35.44-.02.05.02.07.06.07-.53,2.55-.86,5.63.53,7.96,1.24,2.08,3.61,2.74,5.83,3.21,1.16.25,2.32.52,3.47.82,1.1.29,2.27.64,3.14,1.41,1.03.92,1.29,2.26,1.4,3.58.13,1.59-.02,3.19-.31,4.76-.31,1.7-.77,3.41-1.48,4.98-.56,1.26-1.25,2.47-1.73,3.76-.19-1.96-.84-1.79-1.11-3.75-.01-.09.03.18.03.24.1,1.98.53,1.66.65,3.64.12,2.01.02,4.03-.16,6.03-.34,3.97-1.23,7.8-2.23,11.64-.88,3.37-2.02,6.91-1.58,10.43Z`,
+'R-TOP':`M143.34,163.05c-.2-.55-.48-1.06-.76-1.57-.08-.15-.16-.31-.24-.47.02-.02.05-.03.05-.05.16-.46.34-.91.27-1.41-.07-.51-.32-.96-.56-1.41-.23-.44-.23-.86-.15-1.34.07-.42.14-.85.02-1.27-.2-.72-.91-1.1-1.59-1.26-.9-.21-1.89-.14-2.8-.01-2.08.28-4.07,1.05-5.94,1.96-1.85.9-3.69,1.93-5.27,3.25-.77.65-1.5,1.38-2.2,2.11-.49.52-.97,1.09-1.28,1.74-.03.05-.06.1-.09.16-.08.15-.15.32-.18.49-.03.16-.05.33,0,.49.03.11.1.26.21.32-.11.33.15.36.41.31-.22.25-.34.55-.1.86.05.07.12.14.19.2-.15.15-.21.38-.24.59-.05.38,0,.72.16,1.06.41.9,1.17,1.61,1.88,2.28,1.47,1.4,3.16,2.56,5.01,3.39.92.41,1.89.72,2.86,1.01,1.03.31,2.08.58,3.15.7.5.06,1.01.08,1.51.05.43-.03.87-.07,1.26-.26.74-.36,1.27-1.07,1.7-1.76.52-.84.99-1.75,1.3-2.69.19-.57.3-1.15.39-1.75.01-.1.03-.2.04-.3,0,0,.02-.02.03-.02,1.41-1.35,1.59-3.64.96-5.41Z`,
+'L-TOP':`M100.99,170.15s.02.01.03.02c.02.1.04.2.06.3.12.58.28,1.16.5,1.72.37.92.91,1.79,1.48,2.59.47.65,1.04,1.33,1.81,1.64.4.16.85.18,1.28.17.5,0,1.01-.06,1.5-.15,1.06-.19,2.08-.54,3.09-.91.95-.35,1.89-.72,2.78-1.2,1.8-.95,3.4-2.23,4.77-3.72.66-.72,1.38-1.47,1.72-2.4.13-.35.17-.7.09-1.07-.04-.2-.12-.43-.28-.57.07-.07.13-.13.18-.21.22-.33.08-.62-.16-.85.26.03.51-.02.39-.34.11-.07.17-.23.18-.34.03-.16,0-.33-.04-.49-.05-.17-.13-.33-.22-.48-.03-.05-.07-.1-.1-.15-.35-.63-.87-1.17-1.39-1.65-.74-.68-1.52-1.36-2.33-1.95-1.67-1.21-3.57-2.11-5.48-2.89-1.93-.79-3.97-1.42-6.06-1.56-.92-.06-1.91-.07-2.79.2-.67.2-1.35.63-1.5,1.36-.09.43.01.85.11,1.27.11.48.14.89-.06,1.35-.2.46-.43.93-.46,1.45-.03.5.18.94.36,1.38,0,.02.03.04.06.05-.06.16-.13.32-.2.48-.25.53-.49,1.05-.65,1.62-.51,1.8-.17,4.08,1.32,5.33Z`,
+'M-TOP':`M123.58,163.29c-.45-.26-1-.32-1.5-.35-.59-.03-1.18,0-1.75.13-.18.04-.35.1-.52.18-.29.09-.52.27-.69.51-.25.29-.4.64-.5,1.01-.01.05.03.06.07.05-.06.3-.09.61-.1.89-.04,1.19.1,2.86,1.11,3.66.74.58,1.92.53,2.78.32.74-.18,1.37-.6,1.72-1.29.43-.86.51-1.94.43-2.88-.07-.81-.28-1.77-1.04-2.22Z`,
+'TAIL-FIN':`M302.68,269.53c.37-.04.75-.06,1.12-.05-.03-.05-.05-.11-.08-.16-.08-.15-.17-.29-.25-.43-1.53-1.06-3.56-1.36-5.42-1.4-3.05-.05-5.93.71-8.86,1.46-3.17.8-6.35,1.15-9.61.85-3.13-.29-6.18-1.07-9.16-2.06-5.98-1.99-11.68-4.8-17.78-6.45-5.32-1.44-11.09-2.09-16.44-.44-2.28.7-4.48,1.78-6.5,3.08.43-.67.85-1.35,1.25-2.03,1.6-2.69,2.92-5.48,3.99-8.43,1.06-2.9,1.93-5.85,2.19-8.94.26-3.02-.07-6.06-1.02-8.94-.92-2.82-2.34-5.44-3.7-8.08-1.4-2.72-2.67-5.48-3.39-8.47-.7-2.92-.88-5.93-.65-8.92.22-2.87.93-5.65,1.36-8.49.32-2.17.39-4.49-.31-6.59,0-.01-.01-.02-.02-.03-.12-.18-.29-.37-.45-.54-.02.02-.04.04-.05.05,0,.03.02.06.03.09-1.21,1.76-2.74,3.34-4.2,4.86-2.38,2.47-4.9,4.75-7.55,6.95-2.69,2.23-5.39,4.44-7.85,6.93-2.38,2.41-4.56,5.01-6.41,7.85-3.69,5.65-5.89,12.07-6.11,18.83-.22,6.75,1.36,13.28,3.21,19.73.98,3.42,1.99,6.84,2.68,10.34.33,1.67.55,3.32.44,5.03-.11,1.6-.45,3.17-.91,4.71-.13.42-.24.85-.35,1.28-.18.34-.38.67-.56,1-.37.69-.68,1.43-.72,2.22-.02.45.03,1.05.5,1.26.19.09.4.1.61.07.03.11.2.19.36.1,1.34-.76,3.15-.67,4.63-.49,1.61.2,3.23.57,4.8.98,4.2,1.11,8.04,3.44,11.6,5.87,3.46,2.35,6.8,4.9,10.54,6.79,1.91.97,3.9,1.66,5.93,2.33,2.15.71,4.31,1.4,6.51,1.93,2.02.49,4.07.88,6.16.88,2.03,0,4.06-.31,6.04-.79,3.85-.93,7.56-2.46,10.96-4.48,3.37-2,6.48-4.45,9.24-7.24,3.02-3.05,5.35-6.59,7.83-10.07,1.17-1.65,2.43-3.22,3.71-4.78,1.15-1.4,2.33-2.77,3.69-3.96,1.36-1.19,2.92-2.18,4.66-2.72,1.39-.43,2.83-.56,4.26-.46.02,0,.03,0,.05,0Z`,
+'TAIL-MAIN':`M213.65,281.22c-1.12.32-2.4.38-3.49-.12-1.27-.59-2.17-1.78-2.61-3.08-.43-1.28-.42-2.62.25-3.81.17-.31.38-.6.61-.86-1.02.45-2.03.91-3.03,1.39-2.98,1.45-5.89,3.04-8.73,4.74-2.44,1.45-4.91,2.85-7.47,4.06-5.29,2.51-11.01,4.47-16.89,4.83-2.82.18-5.67-.04-8.39-.8-2.69-.75-5.11-2.11-7.14-4.04-4.26-4.05-6.78-9.91-7.13-15.75-.4-6.55,1.49-13.1,3.4-19.29,1.77-5.74,3.89-11.4,5.05-17.31,1.17-5.96,1.13-12.02-.69-17.85-.95-3.06-2.27-6-3.84-8.79-.73-1.31-1.52-2.57-2.51-3.7-.77-.88-1.62-1.67-2.48-2.45,0,0,0-.02.01-.02-.07-.03-.13-.07-.2-.1-.26-.12-.53-.2-.8-.26,0-.07-.02-.13-.11-.16-.62-.24-1.32,0-1.91.24-.79.32-1.53.75-2.27,1.18-2.01,1.18-4.08,2.26-6.07,3.47-4.53,2.75-8.98,5.72-13.21,8.91-1.08.82-2.11,1.71-3.2,2.52-.2.15-.43.31-.66.48-.21.2-.42.4-.62.61-.04.05-.1.07-.15.07-.03.03-.06.06-.09.1-.05-.08-.11-.16-.17-.24.01,0,.02,0,.03,0-.1-.12-.18-.25-.29-.35-.02,0-.03,0-.05,0-.06-.07-.12-.14-.19-.2-.84-.84-1.82-1.43-2.85-2.01-1.92-1.09-3.84-2.23-5.52-3.68-1.7-1.46-3.11-3.24-4.03-5.29-.81-1.81-1.12-3.89-2.37-5.47-.58-.74-1.55-1.54-2.54-1.55-.54,0-1.1.24-1.6.56-.14.06-.27.15-.38.26-.17.13-.34.26-.48.38-.04.03-.04.09-.01.11-2.64,2.1-4.22,5.32-5.66,8.31-1.81,3.76-3.34,7.66-4.49,11.68-2.49,8.69-3.13,17.92-2.4,26.9.75,9.25,3.1,18.26,6.54,26.87,3.02,7.55,6.75,14.89,11.68,21.39,4.87,6.41,10.98,11.65,17.85,15.83,6.85,4.17,14.43,7.32,22.33,8.82,3.81.73,7.71,1.05,11.59.85,4.07-.21,8.15-.98,12.09-2.01,7.99-2.1,15.5-5.77,21.98-10.9,5.87-4.66,10.76-10.37,15.72-15.94,2.68-3,5.41-6,8.34-8.77-.24.1-.48.19-.73.26Z`,
+'TAIL-BORDER':`M113.03,198.28c.98,1.04,1.83,2.2,2.58,3.41.84,1.34,1.55,2.76,2.12,4.24.57,1.48.94,3,1.27,4.55.17.82.33,1.65.4,2.49.03.35.05.7.03,1.06-.01.23-.03.47-.04.7.02.1.03.2.04.3.06-.07.12-.14.18-.2.84-3.36,2.46-6.51,4.36-9.39,1.82-2.76,4.01-5.35,6.82-7.14,3.14-2.01,6.93-2.66,10.59-2.92.95-.07,1.91-.15,2.82-.42.79-.24,1.53-.63,2.24-1.05,1.33-.79,2.6-1.75,4.08-2.25.75-.25,1.55-.36,2.34-.27.96.1,1.9.31,2.86.36.95.05,1.87-.07,2.79-.31.23-.06.46-.13.69-.19.3-.15.63-.24.95-.32.56-.14,1.09-.3,1.68-.3.44,0,.89.06,1.32.13.15.01.3.02.45.04,1.43.17,2.87.39,4.29,0,.13-.04.27-.08.4-.13,0,.27-.01.55-.03.82-.65,3.71-2.91,6.91-5.64,9.42-3,2.76-6.6,4.72-10.39,6.16-3.97,1.51-8.12,2.49-12.22,3.57-4.11,1.09-8.23,2.28-12.03,4.24-1.91.99-3.72,2.15-5.39,3.5-.79.64-1.63,1.24-2.35,1.96-.33.33-.62.68-.88,1.04-.16-.51-.35-1.02-.57-1.51-.63-1.41-1.48-2.74-2.55-3.86-1.04-1.09-2.26-1.98-3.49-2.84-1.29-.91-2.65-1.67-4.06-2.37-1.43-.7-2.88-1.34-4.3-2.05-1.39-.7-2.77-1.44-4.14-2.19-2.77-1.53-5.43-3.3-7.37-5.85-.95-1.25-1.74-2.62-2.34-4.07-.49-1.18-.9-2.43-1.02-3.71.2.14.4.29.63.39.29.12.58.14.89.07.36-.09.69-.27,1.01-.44.34-.18.69-.33,1.06-.45.67-.21,1.38-.25,2.07-.13.74.13,1.41.45,2.12.7`,
+'R-EAR':`M188.17,93.96c-1.6,2.44-3.75,4.54-6.09,6.28-1.97,1.47-4.21,2.7-6.57,3.4-2.29.68-5.01.88-6.92-.8-2.09-1.84-2.31-5.09-2.07-7.67.17-1.89.7-3.75,1.54-5.45.41-1,1.02-1.92,1.7-2.75.65-.8,1.38-1.54,2.15-2.23,1.66-2.02,3.88-3.63,6.35-4.46,4.58-1.54,11.04.08,12.05,5.44.55,2.92-.55,5.83-2.14,8.25Z`,
+'L-EAR':`M58.21,90.33c.63-5.42,6.96-7.49,11.64-6.27,2.52.66,4.85,2.11,6.65,4.01.81.64,1.59,1.32,2.3,2.08.73.78,1.41,1.66,1.88,2.63.96,1.64,1.62,3.46,1.92,5.33.42,2.56.43,5.82-1.53,7.8-1.8,1.82-4.52,1.81-6.85,1.29-2.41-.54-4.72-1.61-6.79-2.94-2.45-1.57-4.74-3.52-6.51-5.84-1.75-2.3-3.06-5.13-2.71-8.08Z`,
+'HEAD':`M179.28,55.9c-.94-4.9-2.96-9.56-5.38-13.9-2.26-4.04-4.99-7.81-8.14-11.21-.54-.58-1.09-1.14-1.65-1.69-1.13-1.24-2.32-2.42-3.54-3.57-2.4-2.24-5.07-4.16-7.95-5.74-5.71-3.14-12.1-4.91-18.55-5.7-6.62-.81-13.36-.64-19.96.3-7.26,1.03-14.51,3.15-20.69,7.18-1.23.8-2.42,1.67-3.58,2.58.01-.01.03-.02.04-.04.03-.03,0-.07-.03-.04-3.62,2.89-7.02,6.09-9.93,9.71-.01.02-.02.03-.04.05-.85.93-1.67,1.89-2.4,2.92-.49.69-.91,1.43-1.26,2.2-1.35,2.11-2.56,4.31-3.63,6.59-2.12,4.5-3.8,9.29-4.4,14.24-.62,5.13.39,10.32,1.77,15.25.69,2.5,1.53,4.95,2.45,7.37.94,2.46,2.03,4.86,3,7.31.94,2.37,1.66,4.83,2.11,7.34.43,2.43.58,4.89.81,7.34.19,2.05.46,4.1,1.13,6.05.71,2.06,1.84,3.92,3.31,5.52,3.18,3.46,7.26,5.96,11.47,7.96,4.51,2.14,9.26,3.89,14.06,5.23,5.02,1.41,10.18,2.32,15.39,2.47.36.01.72.02,1.08.02.03.02.07.03.1.03.48,0,.95-.02,1.43-.05.48-.01.95-.03,1.43-.05.03,0,.07-.02.1-.03.36-.03.72-.06,1.08-.09,5.19-.52,10.28-1.79,15.18-3.54,4.7-1.68,9.31-3.76,13.66-6.2,4.07-2.29,7.96-5.07,10.89-8.75,1.35-1.7,2.36-3.63,2.92-5.73.53-1.99.66-4.06.71-6.12.05-2.46.03-4.92.29-7.37.27-2.54.82-5.04,1.59-7.47.79-2.51,1.72-4.98,2.48-7.5.75-2.48,1.41-4.99,1.93-7.52,1.02-5.02,1.67-10.26.69-15.34Z`,
+'LIPS':`M135.85,115.26c-2.12-.21-4.2-.68-6.31-.98-2.92-.42-5.94-.66-8.85-.05-1.3.27-2.57.71-3.79,1.25-.67.3-1.33.65-2.01.93-.58.24-1.25.52-1.89.52-.14,0-.28-.03-.4-.09.35,1.14,2.82.68,3.65.42.06-.02.14,0,.18.05,1.25,1.55,2.79,2.87,4.63,3.64,1.56.65,3.26.88,4.94.79,1.84-.1,3.73-.52,5.42-1.27.8-.35,1.56-.8,2.23-1.35.72-.59,1.29-1.27,1.85-2.01.51-.67,1.14-1.21,1.89-1.58.12-.06.25-.11.37-.16-.65.02-1.3-.02-1.94-.08Z`,
+'R-EYEBROW':`M158.66,70.92c-1.72-1.38-3.87-2.36-6.05-2.7-4.41-.68-8.57,1.74-11.51,4.83-.33.35-.65.71-.96,1.08-.41.77-.77,1.56-1.06,2.38-.21.59-.41,1.19-.53,1.81,0,.03-.01.06-.02.09,1.59-2.52,4.39-4.25,7.2-5.09,1.87-.56,3.84-.89,5.79-.92,1.91-.03,3.74.32,5.55.91,1.75.57,3.39,1.43,4.54,2.91.2.25.6-.09.55-.34-.34-1.99-1.98-3.75-3.5-4.97Z`,
+'R-EYE-WHITE':`M164.42,92.33c-.24.42-.78.76-1.16,1.03-1.93,1.38-4.24,2.29-6.45,3.12-2.54.96-5.14,1.61-7.83,1.94-1.32.16-2.64.34-3.98.3-.58-.02-1.14-.11-1.71-.17-.38-.04-.76-.07-1.13-.16-.09-.02-.18-.05-.27-.08.03-.06.04-.13,0-.19-.49-1.05-.65-2.2-.71-3.35-.06-1.03-.05-2.07.02-3.1.08-1.07.21-2.13.49-3.16.1-.37.21-.76.35-1.14.29-.62.61-1.23.99-1.8,2.45-3.78,6.87-6.32,11.44-6.03,2.31.15,4.55,1.2,6.27,2.72,1.73,1.54,2.87,3.71,3.39,5.95.1.45.16.91.24,1.37.08.46.19.92.22,1.38.03.44.05.97-.17,1.36Z`,
+'L-EYEBROW':`M92.6,71.88c1.62-1.5,3.69-2.63,5.85-3.11,4.36-.98,8.67,1.13,11.82,4.01.35.32.7.66,1.04,1.01.46.74.88,1.5,1.23,2.3.25.57.49,1.16.66,1.76,0,.03.02.06.03.09-1.76-2.4-4.68-3.94-7.54-4.57-1.9-.43-3.9-.62-5.84-.51-1.9.1-3.71.58-5.47,1.3-1.71.69-3.28,1.67-4.33,3.22-.18.27-.6-.05-.58-.3.2-2.01,1.71-3.88,3.14-5.2Z`,
+'L-EYE-WHITE':`M88.08,92.3c0-.47.07-.93.13-1.4.05-.46.08-.92.15-1.38.36-2.27,1.34-4.52,2.96-6.17,1.61-1.64,3.77-2.85,6.06-3.15,4.54-.61,9.12,1.62,11.83,5.22.41.55.78,1.13,1.11,1.73.16.37.3.75.43,1.11.35,1.01.56,2.06.71,3.12.14,1.02.22,2.06.24,3.09.02,1.15-.06,2.31-.47,3.39-.03.07-.01.13.02.19-.09.04-.18.07-.26.1-.36.12-.74.17-1.12.24-.57.1-1.12.24-1.69.29-1.33.13-2.66.05-3.99-.03-2.71-.15-5.35-.61-7.95-1.39-2.26-.68-4.63-1.43-6.65-2.67-.4-.25-.97-.55-1.23-.95-.25-.38-.27-.91-.27-1.35Z`,
+'NOSE':`M125.92,108.62c-.92-.22-1.88-.62-2.68-1.11-.46-.28-.87-.65-1.23-1.05-.37-.41-.79-.94-.76-1.52.04-.82,1.21-1.25,1.69-1.81.63-.75.69-1.6.52-2.52,0-.03-.05,0-.05.02-.06.61-.12,1.28-.42,1.83-.26.47-.63.77-1.05,1.09-.73.53-1.37,1.17-1.13,2.16.25,1.02,1.34,1.96,2.23,2.43.8.42,1.86,1,2.79.81.12-.02.29-.27.09-.31Z`,
+'HAIR-HEAD':`M179.68,72.86c-.13.09-.29-.06-.25-.19.76-2.66,1.51-5.32,2.13-8.01.54-2.34.97-4.7,1.24-7.08.24-2.09.35-4.19.4-6.29.05-1.92,0-3.87-.34-5.77-.32-1.79-.92-3.6-2.13-5-.12-.14.04-.39.21-.27.01,0,.02.02.03.03,0,0,0,0,0,0,0,0,0,0,0,0,.68.53,1.25,1.17,1.71,1.9.4.65.72,1.35.98,2.06.22.59.41,1.21.58,1.82-.09-1.21-.23-2.42-.42-3.63-.49-3.14-1.38-6.14-2.52-9.09-2.08-5.37-4.76-10.68-8.86-14.81-2.13-2.14-4.64-3.92-7.32-5.31-1.36-.7-2.77-1.3-4.22-1.76-1.14-.37-2.32-.47-3.51-.52-.56-.59-1.19-1.13-1.82-1.62-1.9-1.47-4.03-2.63-6.19-3.65-4.96-2.36-10.22-4-15.64-4.87-5.85-.94-11.82-1.03-17.7-.33-5.82.69-11.54,2.16-16.97,4.37-5.19,2.12-10.07,4.96-14.51,8.39-4.37,3.37-8.32,7.29-11.75,11.62-3.43,4.34-6.33,9.1-8.49,14.19-2.13,4.99-3.53,10.3-3.95,15.71-.11,1.36-.15,2.72-.13,4.08.47-1.95,1.24-3.83,2.42-5.44.12-.16.34-.06.31.13-.05.32-.1.64-.14.97-.36,2.61-.47,5.26-.37,7.9.1,2.62.42,5.23.94,7.8.52,2.59,1.24,5.13,2.13,7.62.68,1.9,1.49,3.76,2.33,5.6.56.81,1.15,1.6,1.78,2.36.58.7,1.2,1.34,1.83,1.98.58,1.27,1.2,2.52,1.86,3.75.95,1.75,1.93,3.48,2.91,5.22.98,1.73,2.07,3.46,2.62,5.39.09.33.55,0,.57-.21.38-3.32.51-6.67.99-9.99.46-3.22,1.27-6.48,3.06-9.24.63-.97,1.37-1.83,2.2-2.61,1.21-.81,2.45-1.57,3.72-2.28,4.87-2.73,10.16-4.45,15.54-5.89,5.36-1.44,10.79-2.65,16.02-4.54,4.11-1.48,8.14-3.35,11.93-5.57-1.35,1.12-2.74,2.18-4.19,3.18-4.34,2.99-9.09,5.39-14.01,7.27-1.53.59-3.1,1.1-4.7,1.45-1.48.33-3.04.26-4.47.82-.11.04-.3.31-.12.38.88.38,1.87.4,2.81.36,1.12-.04,2.25-.14,3.36-.28,2.71-.34,5.37-1.01,8-1.75,4.79-1.36,9.42-3.23,13.75-5.71,4.23-2.42,8.26-5.35,11.55-8.97,2.83-3.11,5.18-6.65,7.1-10.39.19,1.2.43,2.4.72,3.59.72,3.05,1.72,6.02,2.81,8.95.97,2.6,2.17,5.07,3.72,7.38,1.72,2.56,3.8,4.94,6.31,6.76.12.09.38-.09.31-.24-1.09-2.29-2.87-4.17-3.91-6.49-.68-1.53-1.23-3.11-1.69-4.73.3.5.6,1,.92,1.49,1.58,2.47,3.33,4.82,5.02,7.21,1.73,2.45,3.44,4.96,4.65,7.72.78,1.77,1.28,3.59,1.56,5.45-.03.05-.07.11-.1.16,0,.02,0,.03,0,.05.09-.04.19-.08.27-.12.04.36.08.71.1,1.07.06,1.01.05,2.02.02,3.03.02.03.03.07.05.1.02.04.06.09.08.11.01.02.03.03.05.05,0,0,.03.02.03.03.13.09.25.09.41.03.05-.02.1-.04.15-.07.26-.62.6-1.22.93-1.79.62-1.08,1.23-2.15,1.81-3.25,1.31-2.51,2.5-5.08,3.57-7.7.84-2.06,1.63-4.16,2.31-6.28-.69.86-1.48,1.63-2.39,2.24Z`,
+};
+
+function buildMermaid(size) {
+  const c = player.character;
+  const sk = CHAR_SKINS.find(s=>s.id===c.skin)||CHAR_SKINS[2];
+  const hr = CHAR_HAIRS.find(h=>h.id===c.hair)||CHAR_HAIRS[0];
+  const ey = CHAR_EYES.find(e=>e.id===c.eye)||CHAR_EYES[0];
+  const tl = CHAR_TAILS.find(t=>t.id===c.tail)||CHAR_TAILS[0];
+  const tp = CHAR_TOPS.find(t=>t.id===c.top)||CHAR_TOPS[0];
+  const SK=sk.skin, SKS=sk.shadow, LIP=sk.lips;
+  const HR=hr.col, EYE=ey.col, TOP=tp.col;
+  let tm=tl.main, tb=tl.border, tf=tl.fin;
+  const eq=c.equipped||{};
+  if (eq.tail==='tail_silver')  { tm='#A8A8B8'; tb='#D8D8E8'; tf='#787888'; }
+  if (eq.tail==='tail_rainbow') { tm='#D02070'; tb='#80E0FF'; tf='#6010A0'; }
+  if (eq.tail==='tail_glitter') { tm='#C08000'; tb='#FFE060'; tf='#804000'; }
+  const W=size, H=Math.round(size*(318.64/303.8));
+  const gHead=eq.head||'h_none', gNeck=eq.neck||'n_none', gHeld=eq.held||'held_none';
+  const headGear = gHead==='h_flower'?`<circle cx="125" cy="18" r="8" fill="#FF69B4" stroke="#C01060" stroke-width="1.5"/><circle cx="125" cy="18" r="3.5" fill="#FFD700"/><circle cx="108" cy="24" r="7" fill="#FF9999" stroke="#CC4444" stroke-width="1.2"/><circle cx="108" cy="24" r="3" fill="#FFD700"/><circle cx="142" cy="24" r="7" fill="#FF69B4" stroke="#C01060" stroke-width="1.2"/><circle cx="142" cy="24" r="3" fill="#FFD700"/><circle cx="96" cy="36" r="5.5" fill="#FFB6C1" stroke="#CC4488" stroke-width="1"/><circle cx="96" cy="36" r="2.2" fill="#FFD700"/><circle cx="154" cy="36" r="5.5" fill="#FF9999" stroke="#CC4444" stroke-width="1"/><circle cx="154" cy="36" r="2.2" fill="#FFD700"/>`
+    : gHead==='h_gold'?`<path d="M85 55 L89 38 L102 50 L117 32 L130 46 L143 32 L158 50 L171 38 L175 55Z" fill="#FFD700" stroke="#B8860B" stroke-width="2" stroke-linejoin="round"/><rect x="85" y="53" width="90" height="9" rx="4" fill="#FFD700" stroke="#B8860B" stroke-width="1.8"/><circle cx="117" cy="34" r="5.5" fill="#FF4444" stroke="#CC0000" stroke-width="1.2"/><circle cx="130" cy="47" r="5.5" fill="#4444FF" stroke="#0000CC" stroke-width="1.2"/><circle cx="143" cy="34" r="5.5" fill="#44FF44" stroke="#00CC00" stroke-width="1.2"/>`
+    : gHead==='h_star'?`<path d="M163 55 L166 47 L169 55 L177 55 L171 60 L173 68 L166 63 L159 68 L161 60 L155 55Z" fill="#FF6B35" stroke="#CC3300" stroke-width="1.5"/><circle cx="166" cy="58" r="4" fill="#FFD700"/>`
+    : gHead==='h_pearl'?`<path d="M88 53 Q130 41 172 53" fill="none" stroke="#E8E8F0" stroke-width="3.5"/>${[...Array(7)].map((_,i)=>{const t=i/6;const x=(88+t*84).toFixed(1);const y=(53-Math.sin(t*Math.PI)*12).toFixed(1);return `<circle cx="${x}" cy="${y}" r="4.5" fill="#F8F8FF" stroke="#D0D0E0" stroke-width="1"/>`;}).join('')}` : '';
+  const neckGear = gNeck==='n_crystal'?`<path d="M113 134 Q130 141 147 134" fill="none" stroke="#93C5FD" stroke-width="1.8"/><polygon points="130,139 127,145 133,145" fill="#60A5FA" stroke="#2563EB" stroke-width=".8"/><circle cx="113" cy="135" r="2.5" fill="#93C5FD"/><circle cx="130" cy="139" r="2.5" fill="#60A5FA"/><circle cx="147" cy="135" r="2.5" fill="#93C5FD"/>`
+    : gNeck==='n_pearl'?`${[...Array(8)].map((_,i)=>{const a=-35+i*10;const r=a*Math.PI/180;const px=(130+18*Math.sin(r)).toFixed(1);const py=(137-3*Math.cos(r)).toFixed(1);return `<circle cx="${px}" cy="${py}" r="3.5" fill="#F8F8FF" stroke="#D0D0D8" stroke-width=".8"/>`;}).join('')}`
+    : gNeck==='n_shell'?`<path d="M113 134 Q130 139 147 134" fill="none" stroke="#DEB887" stroke-width="1.4"/><path d="M124 139 C124 134 136 134 136 139 C136 143 130 145 130 145 C130 145 124 143 124 139Z" fill="#F4A460" stroke="#DEB887" stroke-width="1.2"/>` : '';
+  const heldGear = gHeld==='held_shell'?`<ellipse cx="54" cy="215" rx="13" ry="11" fill="#F4A460" stroke="#DEB887" stroke-width="1.8"/>`
+    : gHeld==='held_star'?`<path d="M53 200 L56 190 L59 200 L69 200 L62 206 L65 216 L56 210 L47 216 L50 206 L43 200Z" fill="#FFD700" stroke="#FFA500" stroke-width="1.5"/>`
+    : gHeld==='held_trident'?`<line x1="56" y1="170" x2="56" y2="228" stroke="#FFD700" stroke-width="4.5" stroke-linecap="round"/><path d="M42 175 L47 170 L56 178 L65 170 L70 175" fill="none" stroke="#FFD700" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><line x1="42" y1="175" x2="42" y2="184" stroke="#FFD700" stroke-width="3.5" stroke-linecap="round"/><line x1="70" y1="175" x2="70" y2="184" stroke="#FFD700" stroke-width="3.5" stroke-linecap="round"/><circle cx="56" cy="168" r="5.5" fill="#60A5FA" stroke="#FFD700" stroke-width="1.5"/>` : '';
+  return `<svg width="${W}" height="${H}" viewBox="0 0 303.8 318.64" xmlns="http://www.w3.org/2000/svg">
+  <path d="${MP['TAIL-FIN']}" fill="${tf}"/>
+  <path d="${MP['TAIL-MAIN']}" fill="${tm}"/>
+  <path d="${MP['TAIL-BORDER']}" fill="${tb}"/>
+  <path d="${MP['HAIR-LENGTH']}" fill="${HR}"/>
+  <path d="${MP['R-ARM']}" fill="${SK}"/>
+  <path d="${MP['L-ARM']}" fill="${SK}"/>
+  <path d="${MP['R-HAND']}" fill="${SK}"/>
+  <path d="${MP['BODY']}" fill="${SK}"/>
+  <path d="${MP['R-TOP']}" fill="${TOP}"/>
+  <path d="${MP['L-TOP']}" fill="${TOP}"/>
+  <path d="${MP['M-TOP']}" fill="${TOP}"/>
+  <path d="${MP['R-EAR']}" fill="${SK}"/>
+  <path d="${MP['L-EAR']}" fill="${SK}"/>
+  <path d="${MP['HEAD']}" fill="${SK}"/>
+  <path d="${MP['HAIR-HEAD']}" fill="${HR}"/>
+  <path d="${MP['LIPS']}" fill="${LIP}" opacity=".85"/>
+  <path d="${MP['NOSE']}" fill="${SKS}"/>
+  <path d="${MP['L-EYEBROW']}" fill="${HR}"/>
+  <path d="${MP['R-EYEBROW']}" fill="${HR}"/>
+  <path d="${MP['L-EYE-WHITE']}" fill="#fff"/>
+  <path d="${MP['R-EYE-WHITE']}" fill="#fff"/>
+  <circle cx="100.64" cy="89.13" r="8.18" fill="${EYE}"/>
+  <path d="M160.2,89.13c0,4.52-3.66,8.18-8.18,8.18s-8.18-3.66-8.18-8.18,3.66-8.18,8.18-8.18,8.18,3.66,8.18,8.18Z" fill="${EYE}"/>
+  <circle cx="97.95" cy="85.69" r="1.49" fill="#fff"/>
+  <circle cx="149.33" cy="85.69" r="1.49" fill="#fff"/>
+  ${headGear}${neckGear}${heldGear}
+</svg>`;
+}
+
+// ═══════════════════════════════════════════════════════
+// NAME + CREATOR FLOW
+// ═══════════════════════════════════════════════════════
+let charActiveTab = 'gear';
+
+function goToCreatorStep0() {
+  document.getElementById('creatorStep0').classList.add('active');
+  document.getElementById('creatorStep1').classList.remove('active');
+  document.getElementById('dot0').classList.add('active');
+  document.getElementById('dot0').classList.remove('done');
+  document.getElementById('dot1').classList.remove('active','done');
+}
+
+function goToCreatorStep1() {
   const name = document.getElementById('nameInput').value.trim();
   if (!name) return;
-  document.getElementById('nameConfirmBtn').disabled = true;
-  document.getElementById('nameConfirmBtn').textContent = 'Creating account...';
-  await createPlayer(name);
+  player.name = name;
+  document.getElementById('creatorStep0').classList.remove('active');
+  document.getElementById('creatorStep1').classList.add('active');
+  document.getElementById('dot0').classList.remove('active');
+  document.getElementById('dot0').classList.add('done');
+  document.getElementById('dot1').classList.add('active');
+  buildCreatorPickers();
+}
+
+function buildCreatorPickers() {
+  buildCreatorPicker('cSkinPicker', CHAR_SKINS, 'skin', 's3', 'skin');
+  buildCreatorPicker('cHairPicker', CHAR_HAIRS, 'hair', 'h1', 'col');
+  buildCreatorPicker('cEyePicker',  CHAR_EYES,  'eye',  'e1', 'col');
+  buildCreatorPicker('cTailPicker', CHAR_TAILS, 'tail', 't1', 'main');
+  buildCreatorPicker('cTopPicker',  CHAR_TOPS,  'top',  'top1', 'col');
+  updateCreatorPreview();
+}
+
+function buildCreatorPicker(elId, palette, prop, defaultId, hexKey) {
+  const el = document.getElementById(elId);
+  el.innerHTML = '';
+  palette.forEach(item => {
+    const sw = document.createElement('div');
+    sw.className = 'creator-swatch' + (item.id === defaultId ? ' sel' : '');
+    sw.style.background = item[hexKey];
+    sw.title = item.label;
+    sw.addEventListener('click', () => {
+      el.querySelectorAll('.creator-swatch').forEach(s => s.classList.remove('sel'));
+      sw.classList.add('sel');
+      player.character[prop] = item.id;
+      updateCreatorPreview();
+      const mn = document.getElementById('mermaidNameInput');
+      document.getElementById('creatorConfirmBtn').disabled = mn.value.trim().length < 2;
+    });
+    el.appendChild(sw);
+  });
+  player.character[prop] = defaultId;
+}
+
+function updateCreatorPreview() {
+  document.getElementById('creatorPreview').innerHTML = buildMermaid(160);
+}
+
+async function confirmCreator() {
+  const mn = document.getElementById('mermaidNameInput').value.trim();
+  if (!mn) return;
+  player.character.mermaidName = mn;
+  document.getElementById('creatorConfirmBtn').disabled = true;
+  document.getElementById('creatorConfirmBtn').textContent = 'Creating your mermaid...';
+  await createPlayer(player.name);
+  document.getElementById('dot1').classList.remove('active');
+  document.getElementById('dot1').classList.add('done');
   refreshMenu();
   showScreen('menuScreen');
 }
+
+// ═══════════════════════════════════════════════════════
+// CHARACTER ROOM
+// ═══════════════════════════════════════════════════════
+function openCharRoom() {
+  const totalStars = player.campaign.levelStars.reduce((s,v)=>s+(v||0),0);
+  document.getElementById('charRoomTitle').textContent = player.character.mermaidName || 'My Mermaid';
+  document.getElementById('charStageName').textContent = player.character.mermaidName || '—';
+  document.getElementById('charSfCount').textContent = player.character.starfish || 0;
+  document.getElementById('charRankTitle').textContent = getCharRank(totalStars);
+  document.getElementById('charMermaidDisplay').innerHTML = buildMermaid(220);
+  updateCharGearBadges();
+  setCharTab('gear');
+}
+
+function getCharRank(stars) {
+  if (stars>=30) return 'Ocean Champion 🏆';
+  if (stars>=20) return 'Deep Sea Explorer';
+  if (stars>=10) return 'Coral Reef Diver';
+  if (stars>=5)  return 'Seaside Swimmer';
+  return 'Ocean Explorer';
+}
+
+function updateCharGearBadges() {
+  const el = document.getElementById('charGearBadges');
+  el.innerHTML = '';
+  const eq = player.character.equipped || {};
+  Object.values(eq).forEach(id => {
+    const item = Object.values(CHAR_GEAR).flat().find(g=>g.id===id);
+    if (item && item.icon) {
+      const s=document.createElement('span'); s.className='char-gear-badge'; s.textContent=item.icon;
+      el.appendChild(s);
+    }
+  });
+}
+
+function setCharTab(tab) {
+  charActiveTab = tab;
+  ['charNavGear','charNavColours','charNavShop'].forEach(id=>document.getElementById(id).classList.remove('active'));
+  document.getElementById('charNav'+tab[0].toUpperCase()+tab.slice(1)).classList.add('active');
+  renderCharTab();
+}
+
+function renderCharTab() {
+  const el = document.getElementById('charTabPanels');
+  el.innerHTML = '';
+  const totalStars = player.campaign.levelStars.reduce((s,v)=>s+(v||0),0);
+  if (charActiveTab==='gear') {
+    const labels={head:'Head',neck:'Neck',tail:'Tail Effect',held:'Held Item'};
+    Object.entries(CHAR_GEAR).forEach(([slot,items])=>{
+      const sec=document.createElement('div'); sec.className='char-section';
+      sec.innerHTML=`<div class="char-section-title">${labels[slot]}</div>`;
+      const grid=document.createElement('div'); grid.className='char-gear-grid';
+      items.forEach(item=>{
+        const unlocked=totalStars>=item.starsNeeded;
+        const equipped=(player.character.equipped||{})[slot]===item.id;
+        const el2=document.createElement('div');
+        el2.className=`char-gear-item${equipped?' char-equipped':''}${!unlocked?' char-locked':''}`;
+        el2.innerHTML=`${equipped?'<span class="char-eq-badge">✓</span>':''}${!unlocked?'<span class="char-lock-ico">🔒</span>':''}<div class="char-gear-icon">${item.icon||'—'}</div><div class="char-gear-name">${item.name}</div><div class="char-gear-stars">${item.starsNeeded>0?`${item.starsNeeded}⭐`:'Always'}</div>`;
+        if (unlocked) el2.addEventListener('click',()=>{
+          if (!player.character.equipped) player.character.equipped={head:'h_none',neck:'n_none',tail:'tail_base',held:'held_none'};
+          player.character.equipped[slot]=item.id;
+          document.getElementById('charMermaidDisplay').innerHTML=buildMermaid(220);
+          updateCharGearBadges();
+          savePlayer();
+          renderCharTab();
+        });
+        grid.appendChild(el2);
+      });
+      sec.appendChild(grid); el.appendChild(sec);
+    });
+  } else if (charActiveTab==='colours') {
+    const defs=[
+      {label:'Skin Tone',  prop:'skin', pal:CHAR_SKINS, hk:'skin'},
+      {label:'Hair Colour',prop:'hair', pal:CHAR_HAIRS, hk:'col'},
+      {label:'Eye Colour', prop:'eye',  pal:CHAR_EYES,  hk:'col'},
+      {label:'Tail Colour',prop:'tail', pal:CHAR_TAILS, hk:'main'},
+      {label:'Top Colour', prop:'top',  pal:CHAR_TOPS,  hk:'col'},
+    ];
+    defs.forEach(def=>{
+      const sec=document.createElement('div'); sec.className='char-section';
+      sec.innerHTML=`<div class="char-section-title">${def.label}</div>`;
+      const row=document.createElement('div'); row.className='colour-edit-row';
+      def.pal.forEach(item=>{
+        const sw=document.createElement('div');
+        sw.className='swatch-sm-char'+(player.character[def.prop]===item.id?' sel':'');
+        sw.style.background=item[def.hk]; sw.title=item.label;
+        sw.addEventListener('click',()=>{
+          player.character[def.prop]=item.id;
+          row.querySelectorAll('.swatch-sm-char').forEach(s=>s.classList.remove('sel'));
+          sw.classList.add('sel');
+          document.getElementById('charMermaidDisplay').innerHTML=buildMermaid(220);
+          savePlayer();
+        });
+        row.appendChild(sw);
+      });
+      sec.appendChild(row); el.appendChild(sec);
+    });
+  } else {
+    const sec=document.createElement('div'); sec.className='char-section';
+    const sf=player.character.starfish||0;
+    sec.innerHTML=`<div class="char-section-title">Starfish Shop</div><div style="font-size:.74rem;color:var(--text-dim);margin-bottom:11px">You have <span style="color:var(--gold);font-weight:700">${sf} 🌟</span> starfish</div>`;
+    const grid=document.createElement('div'); grid.className='char-shop-grid';
+    CHAR_SHOP.forEach(item=>{
+      const owned=(player.character.shopOwned||[]).includes(item.id);
+      const can=sf>=item.cost;
+      const el2=document.createElement('div');
+      el2.className=`char-shop-item${!can&&!owned?' no-afford':''}${owned?' owned-item':''}`;
+      el2.innerHTML=`<div style="font-size:1.4rem;margin-bottom:3px">${item.icon}</div><div style="font-size:.73rem;font-weight:700">${item.name}</div><div style="font-size:.67rem;color:${owned?'var(--green)':'var(--gold)'};margin-top:2px">${owned?'✅ Owned':`${item.cost} 🌟`}</div><div style="font-size:.62rem;color:var(--text-dim);margin-top:3px">${item.desc}</div>`;
+      if (!owned&&can) el2.addEventListener('click',()=>{
+        player.character.starfish-=item.cost;
+        if (!player.character.shopOwned) player.character.shopOwned=[];
+        player.character.shopOwned.push(item.id);
+        savePlayer(); openCharRoom(); setCharTab('shop');
+      });
+      grid.appendChild(el2);
+    });
+    sec.appendChild(grid); el.appendChild(sec);
+  }
+}
+
 
 // ═══════════════════════════════════════════════════════
 // MENU
@@ -1383,6 +1846,9 @@ function buildCampaignMap() {
   const totalStars = player.campaign.levelStars.reduce((s,v) => s+(v||0), 0);
   document.getElementById('campaignPlayerTitle').textContent = `${player.name}'s Adventure`;
   document.getElementById('campaignStarsDisplay').textContent = `⭐ ${totalStars}/30`;
+  // Show mermaid preview
+  const prev = document.getElementById('campaignMermaidPreview');
+  if (prev) prev.innerHTML = buildMermaid(80);
 
   const map = document.getElementById('campaignMap');
   map.innerHTML = '';
@@ -1877,6 +2343,9 @@ async function endGame(completed) {
 
       if (starsEarned > prevStars) {
         player.campaign.levelStars[idx] = starsEarned;
+        // Award starfish for new stars earned
+        const newStars = starsEarned - prevStars;
+        player.character.starfish = (player.character.starfish || 0) + newStars * 3;
       }
 
       // Check theme unlocks
